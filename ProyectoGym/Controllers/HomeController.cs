@@ -28,5 +28,12 @@ namespace ProyectoGym.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+<<<<<<< Updated upstream
+=======
+
+      
+ 
+
+>>>>>>> Stashed changes
     }
 }
