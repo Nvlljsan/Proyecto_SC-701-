@@ -17,12 +17,16 @@ namespace ProyectoGym.Controllers
         {
             return View();
         }
+
         public IActionResult RecuperarClave()
         {
             return View();
         }
 
-
+        public IActionResult Registro()
+        {
+            return View();
+        }
 
     }
 }
