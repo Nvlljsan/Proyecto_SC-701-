@@ -9,7 +9,7 @@ CREATE TABLE Roles (
 
 ----------------------------- Usuarios -----------------------------
 CREATE TABLE Usuarios (
-    UsuarioID INT PRIMARY KEY,
+    UsuarioID INT IDENTITY(1,1) PRIMARY KEY,
     Nombre NVARCHAR(50) NOT NULL,
     Apellido NVARCHAR(50) NOT NULL,
     Email NVARCHAR(100) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE Usuarios (
 
 ----------------------------- Clientes -----------------------------
 CREATE TABLE Clientes (
-    ClienteID INT PRIMARY KEY,
+    ClienteID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
     MembresiaActiva BIT NOT NULL,
     FechaInicioMembresia DATE,
@@ -33,7 +33,7 @@ CREATE TABLE Clientes (
 
 ----------------------------- Empleados -----------------------------
 CREATE TABLE Empleados (
-    EmpleadoID INT PRIMARY KEY,
+    EmpleadoID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
     Puesto NVARCHAR(50) NOT NULL,
     FechaContratacion DATE NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE Empleados (
 
 ----------------------------- Instructores -----------------------------
 CREATE TABLE Instructores (
-    InstructorID INT PRIMARY KEY,
+    InstructorID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
     Especialidad NVARCHAR(100),
     ExperienciaAnios INT,
@@ -51,7 +51,7 @@ CREATE TABLE Instructores (
 
 ----------------------------- Productos -----------------------------
 CREATE TABLE Productos (
-    ProductoID INT PRIMARY KEY,
+    ProductoID INT IDENTITY(1,1) PRIMARY KEY,
     NombreProducto NVARCHAR(100) NOT NULL,
     Descripcion NVARCHAR(255),
     Precio DECIMAL(10, 2) NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE Productos (
 
 ----------------------------- Ventas -----------------------------
 CREATE TABLE Ventas (
-    VentaID INT PRIMARY KEY,
+    VentaID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
     ProductoID INT,
     Cantidad INT NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE Ventas (
 
 ----------------------------- Pagos -----------------------------
 CREATE TABLE Pagos (
-    PagoID INT PRIMARY KEY,
+    PagoID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
     Monto DECIMAL(10, 2) NOT NULL,
     FechaPago DATE NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE Pagos (
 
 ----------------------------- Maquinas -----------------------------
 CREATE TABLE Maquinas (
-    MaquinaID INT PRIMARY KEY,
+    MaquinaID INT IDENTITY(1,1) PRIMARY KEY,
     Nombre NVARCHAR(100) NOT NULL,
     Descripcion NVARCHAR(255),
     Ubicacion NVARCHAR(100),
@@ -91,7 +91,7 @@ CREATE TABLE Maquinas (
 
 ----------------------------- Mantenimiento -----------------------------
 CREATE TABLE MantenimientoMaquinas (
-    MantenimientoID INT PRIMARY KEY,
+    MantenimientoID INT IDENTITY(1,1) PRIMARY KEY,
     EmpleadoID INT,
     MaquinaID INT,
     FechaMantenimiento DATE NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE MantenimientoMaquinas (
 
 ----------------------------- Reservas -----------------------------
 CREATE TABLE Reservas (
-    ReservaID INT PRIMARY KEY,
+    ReservaID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT,
     FechaReserva DATE NOT NULL,
     HoraInicio TIME NOT NULL,
@@ -112,6 +112,9 @@ CREATE TABLE Reservas (
     FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID),
     FOREIGN KEY (MaquinaID) REFERENCES Maquinas(MaquinaID)
 );
+
+----------------------------- ALTERS -----------------------------
+
 
 
 ----------------------------- INSERTS -----------------------------
@@ -155,3 +158,4 @@ FROM MantenimientoMaquinas
 UNION ALL
 SELECT 'Reservas', COUNT(*)
 FROM Reservas;
+
