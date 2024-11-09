@@ -1,0 +1,50 @@
+﻿@model List<ProyectoGym.Models.Usuarios>
+
+@{
+    ViewData["Title"] = "Lista de Usuarios";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th># de usuario</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Direccion</th>
+                <th>Configuraciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.UsuarioID</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellido</td>
+                    <td>@usuario.Email</td>
+                    <td>@usuario.Telefono</td>
+                    <td>@usuario.Direccion</td>
+                    <td>
+                        <a href="@Url.Action("Editar", "Usuarios", new { id = usuario.UsuarioID })" class="btn btn-primary">Editar</a>
+                        <a href="@Url.Action("Eliminar", "Usuarios", new { id = usuario.UsuarioID })" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No se encontraron usuarios.</p>
+}
+
+<!-- Agregar botones de navegación -->
+<div>
+    <a href="@Url.Action("Crear", "Usuarios")" class="btn btn-success">Nuevo Usuario</a>
+</div>

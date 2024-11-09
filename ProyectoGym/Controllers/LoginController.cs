@@ -1,21 +1,54 @@
 using Microsoft.AspNetCore.Mvc;
 using ProyectoGym.Models;
 using System.Diagnostics;
+using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 namespace ProyectoGym.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly IHttpClientFactory _http;
+        private readonly IConfiguration _conf;
 
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(IHttpClientFactory http, IConfiguration conf)
         {
-            _logger = logger;
+            _http = http;
+            _conf = conf;
         }
 
+        [HttpGet]
         public IActionResult InicioSesion()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult InicioSesion(Usuarios model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Login/InicioSesion";
+
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    var datosUsuario = JsonSerializer.Deserialize<Usuarios>((JsonElement)result.Contenido!);
+
+                    HttpContext.Session.SetString("UsuarioID", datosUsuario!.UsuarioID.ToString());
+                    HttpContext.Session.SetString("Nombre", datosUsuario!.Nombre);
+                    return RedirectToAction("Inicio", "Home");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
+            }
         }
 
         public IActionResult RecuperarClave()
@@ -23,9 +56,34 @@ namespace ProyectoGym.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult Registro()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Registro(Usuarios model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Login/Registro";
+
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    return RedirectToAction("InicioSesion", "Login");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
+            }
         }
 
     }

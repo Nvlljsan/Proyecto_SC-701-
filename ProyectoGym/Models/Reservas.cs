@@ -1,4 +1,4 @@
-﻿namespace ProyectoGym.Model
+﻿namespace ProyectoGym.Models
 {
     public class Reservas
     {
