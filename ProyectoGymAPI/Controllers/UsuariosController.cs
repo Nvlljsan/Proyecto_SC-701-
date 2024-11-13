@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using ProyectoGymAPI.Models;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ProyectoGymAPI.Controllers
 {
@@ -124,8 +126,6 @@ namespace ProyectoGymAPI.Controllers
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-
-                // Ejecuta el procedimiento almacenado UsuarioD para eliminar el usuario
                 var result = context.Execute("UsuarioD", new { UsuarioID = usuarioID });
 
                 if (result > 0)
@@ -138,6 +138,31 @@ namespace ProyectoGymAPI.Controllers
                     respuesta.Codigo = -1;
                     respuesta.Mensaje = "Error al eliminar el usuario. Verifique si el UsuarioID es válido.";
                 }
+                return Ok(respuesta);
+            }
+        }
+
+        //======================================================[Metodos Auxiliares]=====================================================================
+        [HttpGet]
+        [Route("RolesLista")]
+        public IActionResult RolesLista()
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.Query<Roles>("RolesLista", new { });
+
+                if (result.Any())
+                {
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = result;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No hay vendedores en el sistema";
+                }
+
                 return Ok(respuesta);
             }
         }

@@ -14,8 +14,4 @@
     <None Include="Views\Login\InicioSesion.cshtml" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

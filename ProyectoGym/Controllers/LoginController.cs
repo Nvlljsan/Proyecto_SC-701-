@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProyectoGym.Models;
+using ProyectoGym.Services;
 using System.Diagnostics;
 using System.Text.Json;
 using static System.Net.WebRequestMethods;
@@ -10,11 +11,13 @@ namespace ProyectoGym.Controllers
     {
         private readonly IHttpClientFactory _http;
         private readonly IConfiguration _conf;
+        private readonly IMetodosComunes _comunes;
 
-        public LoginController(IHttpClientFactory http, IConfiguration conf)
+        public LoginController(IHttpClientFactory http, IConfiguration conf, IMetodosComunes comunes)
         {
             _http = http;
             _conf = conf;
+            _comunes = comunes;
         }
 
         [HttpGet]
@@ -30,6 +33,7 @@ namespace ProyectoGym.Controllers
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Login/InicioSesion";
 
+                model.Contrasena = _comunes.Encrypt(model.Contrasena);
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PostAsync(url, datos).Result;
@@ -69,6 +73,7 @@ namespace ProyectoGym.Controllers
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Login/Registro";
 
+                model.Contrasena = _comunes.Encrypt(model.Contrasena);
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PostAsync(url, datos).Result;

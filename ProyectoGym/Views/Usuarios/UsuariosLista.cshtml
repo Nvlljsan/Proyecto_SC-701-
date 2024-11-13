@@ -6,6 +6,14 @@
 
 <h1>@ViewData["Title"]</h1>
 
+<hr />
+
+<div>
+    <a href="@Url.Action("UsuarioC", "Usuarios")" class="btn btn-success">Nuevo Usuario</a>
+</div>
+
+<hr/>
+
 @if (Model != null && Model.Any())
 {
     <table class="table">
@@ -32,7 +40,10 @@
                     <td>@usuario.Direccion</td>
                     <td>
                         <a href="@Url.Action("Editar", "Usuarios", new { id = usuario.UsuarioID })" class="btn btn-primary">Editar</a>
-                        <a href="@Url.Action("Eliminar", "Usuarios", new { id = usuario.UsuarioID })" class="btn btn-danger">Eliminar</a>
+                        <form method="post" action="@Url.Action("UsuarioD", "Usuarios")" onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
+                            <input type="hidden" name="usuarioID" value="@usuario.UsuarioID" />
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
             }
@@ -43,8 +54,3 @@ else
 {
     <p>No se encontraron usuarios.</p>
 }
-
-<!-- Agregar botones de navegación -->
-<div>
-    <a href="@Url.Action("Crear", "Usuarios")" class="btn btn-success">Nuevo Usuario</a>
-</div>
