@@ -1,5 +1,5 @@
 -------------------------- SP USUARIOS --------------------------
-CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ---- ---- SIN PROBAR ----
+CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ----
 	@Nombre NVARCHAR(50),
     @Apellido NVARCHAR(50),
     @Email NVARCHAR(100),
@@ -23,7 +23,7 @@ BEGIN
     WHERE UsuarioID = @UsuarioID;
 END;
 
-CREATE PROCEDURE [dbo].[UsuarioU] ---- UPDATE ---- ---- SIN PROBAR ----
+CREATE PROCEDURE [dbo].[UsuarioU] ---- UPDATE ----
     @UsuarioID INT,
     @Nombre NVARCHAR(50),
     @Apellido NVARCHAR(50),
@@ -45,7 +45,7 @@ BEGIN
     WHERE UsuarioID = @UsuarioID;
 END;
 
-CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE ---- ---- SIN PROBAR ----
+CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE ----
     @UsuarioID INT
 AS
 BEGIN
