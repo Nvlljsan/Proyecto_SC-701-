@@ -136,7 +136,7 @@ namespace ProyectoGymAPI.Controllers
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Error al eliminar el usuario. Verifique si el UsuarioID es válido.";
+                    respuesta.Mensaje = "Error al eliminar el usuario.";
                 }
                 return Ok(respuesta);
             }

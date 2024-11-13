@@ -105,11 +105,41 @@ namespace ProyectoGym.Controllers
                 }
                 else
                 {
+                    var roles = RolesLista();
+                    if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
+                    {
+                        ViewBag.Roles = rolesLista;
+                    }
+
                     ViewBag.Mensaje = result!.Mensaje;
                     return View(model);
                 }
             }
         }
+
+        [HttpPost]
+        public IActionResult UsuarioD(int usuarioID)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioD?usuarioID=" + usuarioID;
+
+                var response = client.DeleteAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    return RedirectToAction("UsuariosLista");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result?.Mensaje ?? "Error desconocido";
+                    return RedirectToAction("UsuariosLista");
+                }
+            }
+        }
+
+
 
 
 
