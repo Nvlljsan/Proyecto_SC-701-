@@ -39,7 +39,6 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult UsuarioC()
         {
@@ -51,8 +50,7 @@ namespace ProyectoGym.Controllers
             return View();
         }
 
-
-       [HttpPost]
+        [HttpPost]
         public IActionResult UsuarioC(Usuarios model)
         {
             using (var client = _http.CreateClient())
@@ -77,8 +75,45 @@ namespace ProyectoGym.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult UsuarioU(int UsuarioID)
+        {
+            var roles = RolesLista();
+            if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
+            {
+                ViewBag.Roles = rolesLista;
+            }
+            return View();
+        }
 
-        //=================================================================================================
+        [HttpPost]
+        public IActionResult UsuarioU(Usuarios model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioU";
+
+                model.Contrasena = _comunes.Encrypt(model.Contrasena);
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PutAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    return RedirectToAction("UsuariosLista");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View(model);
+                }
+            }
+        }
+
+
+
+        //=================================================[Metodos Auxiliares]=================================================
         private IActionResult RolesLista()
         {
             using (var client = _http.CreateClient())

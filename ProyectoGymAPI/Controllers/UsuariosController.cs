@@ -113,7 +113,7 @@ namespace ProyectoGymAPI.Controllers
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Error al actualizar el usuario. Verifique si el UsuarioID es válido.";
+                    respuesta.Mensaje = "Error al actualizar el usuario.";
                 }
                 return Ok(respuesta);
             }

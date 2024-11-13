@@ -1,0 +1,87 @@
+﻿@model ProyectoGym.Models.Usuarios
+
+<h2>Actualizar Usuario</h2>
+
+<body class="bg-primary d-flex align-items-center justify-content-center vh-100">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header">
+                                    <h3 class="text-center font-weight-light my-4">Registro</h3>
+                                    <a href="@Url.Action("UsuariosLista","Usuarios")" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                        <img src="~/images/gym-logo.png" alt="" style="width: 100px; height: 100px; border-radius: 50%;">
+                                    </a>
+                                </div>
+                                <div class="card-body">
+
+                                    @if (ViewBag.Mensaje != null)
+                                    {
+                                        <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+                                    }
+
+                                    <form asp-action="UsuarioU" asp-controller="Usuarios">
+
+                                        <input type="hidden" asp-for="UsuarioID" />
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre</label>
+                                            <input type="text" asp-for="Nombre" class="form-control" required>
+                                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Apellido</label>
+                                            <input type="text" asp-for="Apellido" class="form-control" required>
+                                            <span asp-validation-for="Apellido" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" asp-for="Email" class="form-control" required>
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Contrasena</label>
+                                            <input type="password" asp-for="Contrasena" class="form-control" required>
+                                            <span asp-validation-for="Contrasena" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Telefono</label>
+                                            <input type="text" asp-for="Telefono" class="form-control" required>
+                                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Direccion</label>
+                                            <input type="text" asp-for="Direccion" class="form-control" required>
+                                            <span asp-validation-for="Direccion" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Rol</label>
+                                            <select asp-for="RolID" class="form-control" required>
+                                                <option value=""></option>
+                                                @if (ViewBag.Roles != null)
+                                                {
+                                                    foreach (var roles in ViewBag.Roles)
+                                                    {
+                                                        <option value="@roles.RolID">@roles.NombreRol</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span asp-validation-for="RolID" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
