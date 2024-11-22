@@ -1,9 +1,10 @@
-﻿namespace ProyectoGym.Models
+﻿namespace ProyectoGymAPI.Models
 {
-    public class Pagos
+    public class PagosViewModel
+
     {
         public int PagoID { get; set; }
-        public int? UsuarioID { get; set; }
+        public string UsuarioNombre { get; set; }
         public decimal Monto { get; set; }
         public DateTime FechaPago { get; set; }
         public string MetodoPago { get; set; }

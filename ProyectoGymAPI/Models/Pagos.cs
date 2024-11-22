@@ -1,4 +1,4 @@
-﻿namespace ProyectoGymAPI.Model
+﻿namespace ProyectoGymAPI.Models
 {
     public class Pagos
     {
@@ -7,5 +7,8 @@
         public decimal Monto { get; set; }
         public DateTime FechaPago { get; set; }
         public string MetodoPago { get; set; }
+
+  
+
     }
 }

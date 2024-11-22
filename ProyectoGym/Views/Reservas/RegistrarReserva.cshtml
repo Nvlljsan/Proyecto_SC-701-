@@ -1,0 +1,34 @@
+﻿@model ProyectoGym.Models.Reservas
+
+<h2>Crear Reserva</h2>
+
+<form asp-action="CrearReserva" asp-controller="Reservas" method="post">
+    <div class="form-group">
+        <label for="UsuarioID">Usuario</label>
+        <input asp-for="UsuarioID" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="FechaReserva">Fecha</label>
+        <input asp-for="FechaReserva" type="date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="HoraInicio">Hora Inicio</label>
+        <input asp-for="HoraInicio" type="time" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="HoraFin">Hora Fin</label>
+        <input asp-for="HoraFin" type="time" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Estado">Estado</label>
+        <select asp-for="Estado" class="form-control">
+            <option value="true">Activa</option>
+            <option value="false">Cancelada</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="MaquinaID">Máquina</label>
+        <input asp-for="MaquinaID" class="form-control" />
+    </div>
+    <input type="submit" class="btn btn-primary" value="Procesar">
+</form>

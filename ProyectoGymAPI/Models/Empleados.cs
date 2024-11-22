@@ -1,4 +1,4 @@
-﻿namespace ProyectoGymAPI.Model
+﻿namespace ProyectoGymAPI.Models
 {
     public class Empleados
     {

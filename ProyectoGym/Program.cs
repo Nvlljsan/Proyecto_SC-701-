@@ -1,9 +1,15 @@
+using ProyectoGym.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<ReservasController>();
+builder.Services.AddHttpClient<PagosController>();
+builder.Services.AddHttpClient<VentasController>();
+
 builder.Services.AddSession();
 
 var app = builder.Build();
