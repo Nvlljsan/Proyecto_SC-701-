@@ -1,0 +1,29 @@
+﻿@model ProyectoGym.Models.Instructores
+
+<h2>Modificar Instructor</h2>
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-danger text-center">@ViewBag.Mensaje</div>
+}
+
+<form asp-action="ModificarInstructor" method="post">
+    <input type="hidden" asp-for="InstructorID" />
+    <div class="mb-3">
+        <label for="Nombre">Nombre</label>
+        <input asp-for="Nombre" class="form-control" disabled />
+    </div>
+    <div class="mb-3">
+        <label for="Apellido">Apellido</label>
+        <input asp-for="Apellido" class="form-control" disabled />
+    </div>
+    <div class="mb-3">
+        <label for="Especialidad">Especialidad</label>
+        <input asp-for="Especialidad" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="ExperienciaAnios">Años de Experiencia</label>
+        <input asp-for="ExperienciaAnios" class="form-control" type="number" />
+    </div>
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="VistaInstructores" class="btn btn-secondary">Cancelar</a>
+</form>

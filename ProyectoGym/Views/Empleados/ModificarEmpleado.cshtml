@@ -1,0 +1,29 @@
+﻿@model ProyectoGym.Models.Empleados
+
+<h2>Modificar Empleado</h2>
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-danger text-center">@ViewBag.Mensaje</div>
+}
+
+<form asp-action="ModificarEmpleado" method="post">
+    <input type="hidden" asp-for="EmpleadoID" />
+    <div class="mb-3">
+        <label for="Nombre">Nombre</label>
+        <input asp-for="Nombre" class="form-control" disabled />
+    </div>
+    <div class="mb-3">
+        <label for="Apellido">Apellido</label>
+        <input asp-for="Apellido" class="form-control" disabled />
+    </div>
+    <div class="mb-3">
+        <label for="Puesto">Puesto</label>
+        <input asp-for="Puesto" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label for="FechaContratacion">Fecha de Contratación</label>
+        <input asp-for="FechaContratacion" class="form-control" type="date" required />
+    </div>
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="VistaEmpleados" class="btn btn-secondary">Cancelar</a>
+</form>
