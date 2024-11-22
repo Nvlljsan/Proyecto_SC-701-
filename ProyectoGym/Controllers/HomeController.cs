@@ -13,7 +13,7 @@ namespace ProyectoGym.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Inicio()
         {
             return View();
         }
