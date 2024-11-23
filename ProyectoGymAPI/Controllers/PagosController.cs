@@ -24,7 +24,7 @@ namespace ProyectoGymAPI.Controllers
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var procedimiento = "GetPagos";
+                var procedimiento = "sp_ObtenerPagos";
                 var pagos = await context.QueryAsync<PagosViewModel>(procedimiento);
                 return Ok(pagos);
             }
@@ -43,7 +43,7 @@ namespace ProyectoGymAPI.Controllers
                     pago.FechaPago,
                     pago.MetodoPago
                 };
-                await connection.ExecuteAsync("InsertPago", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("sp_InsertarPago", parameters, commandType: CommandType.StoredProcedure);
                 return Ok();
             }
         }
@@ -53,7 +53,7 @@ namespace ProyectoGymAPI.Controllers
         {
             using (var connection = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                await connection.ExecuteAsync("DeletePago", new { PagoID = id }, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("sp_EliminarPago", new { PagoID = id }, commandType: CommandType.StoredProcedure);
                 return Ok();
             }
         }

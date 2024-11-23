@@ -26,7 +26,7 @@ namespace ProyectoGymAPI.Controllers
         {
             using (var connection = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var reservas = await connection.QueryAsync("GetReservas", commandType: CommandType.StoredProcedure);
+                var reservas = await connection.QueryAsync("sp_ObtenerReservas", commandType: CommandType.StoredProcedure);
                 return Ok(reservas);
             }
         }
@@ -45,28 +45,28 @@ namespace ProyectoGymAPI.Controllers
                     HoraFin = reserva.HoraFin,
                     MaquinaID = reserva.MaquinaID
                 };
-                await connection.ExecuteAsync("InsertReserva", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("sp_InsertarReserva", parameters, commandType: CommandType.StoredProcedure);
                 return Ok();
             }
         }
 
         [HttpPut]
         [Route("ActualizarEstadoReserva")]
-        public async Task<IActionResult> ActualizarEstadoReserva(int id, [FromBody] bool estado)
+        public async Task<IActionResult> ActualizarEstadoReserva(int id)
         {
             try
             {
-                Console.WriteLine($"ReservaID: {id}, Nuevo Estado: {estado}"); // Log para verificar los valores recibidos
+           
 
                 using (var connection = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
                 {
                     var parameters = new
                     {
                         ReservaID = id,
-                        Estado = estado
+         
                     };
 
-                    var rowsAffected = await connection.ExecuteAsync("UpdateEstadoReserva", parameters, commandType: CommandType.StoredProcedure);
+                    var rowsAffected = await connection.ExecuteAsync("sp_ActualizarEstadoReserva", parameters, commandType: CommandType.StoredProcedure);
                     if (rowsAffected > 0)
                     {
                         return Ok(new { message = "Estado de la reserva actualizado exitosamente." });
@@ -90,7 +90,7 @@ namespace ProyectoGymAPI.Controllers
                 {
                     var parameters = new { ReservaID = id };
 
-                    await connection.ExecuteAsync("DeleteReserva", parameters, commandType: CommandType.StoredProcedure);
+                    await connection.ExecuteAsync("sp_EliminarReserva", parameters, commandType: CommandType.StoredProcedure);
                     return Ok(new { message = "Reserva eliminada exitosamente." });
                 }
             }
