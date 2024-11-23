@@ -361,3 +361,20 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+ProyectoGymAPI/appsettings.json
+ProyectoGym/appsettings.json
+ProyectoGym/Controllers/LoginController.cs
+ProyectoGym/Controllers/LoginController.cs
+ProyectoGym/Controllers/UsuariosController.cs
+ProyectoGym/Models/Usuarios.cs
+ProyectoGymAPI/appsettings.json
+ProyectoGymAPI/Controllers/LoginController.cs
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.AssemblyInfo.cs
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.AssemblyInfoInputs.cache
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.assets.cache
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.csproj.AssemblyReference.cache
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.GeneratedMSBuildEditorConfig.editorconfig
+ProyectoGymAPI/obj/project.assets.json
+ProyectoGymAPI/obj/project.nuget.cache
+ProyectoGymAPI/obj/ProyectoGymAPI.csproj.nuget.dgspec.json
+ProyectoGymAPI/obj/ProyectoGymAPI.csproj.nuget.g.props

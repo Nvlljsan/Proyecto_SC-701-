@@ -1,0 +1,58 @@
+﻿@model List<ProyectoGym.Models.Maquinas>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Lista de Maquinas</h5>
+
+        <div class="table-responsive">
+            <table id="example" class="table text-nowrap align-middle mb-0">
+                <thead>
+                    <tr class="border-2 border-bottom border-primary border-0">
+                        <th>ID Maquina</th>
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>Ubicacion</th>
+                        <th>Estado</th>
+                        <th>Configuraciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var maquina in Model)
+                    {
+                        <tr>
+                            <td>@maquina.MaquinaID</td>
+                            <td>@maquina.Nombre</td>
+                            <td>@maquina.Descripcion</td>
+                            <td>@maquina.Ubicacion</td>
+                            <td>
+                              @if(  @maquina.Estado== true ){
+
+                                    <label>Disponible</label>
+                                }
+                                else
+
+                                {
+                                    <label>En Mantenimiento</label>
+
+                                }
+                            </td>
+
+
+                            <td>
+                                <div class="d-flex">
+                                    <a href="@Url.Action("MaquinasU", "Maquinas", new { MaquinaID = maquina.MaquinaID})" class="btn btn-primary">Editar</a>
+
+                                </div>
+                                                            
+                              
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
