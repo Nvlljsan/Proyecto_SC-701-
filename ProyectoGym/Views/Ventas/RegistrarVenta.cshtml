@@ -1,27 +1,56 @@
-﻿@model ProyectoGym.Models.Ventas
+﻿@model ProyectoGym.Models.VentaViewModel
 
 <h2>Registrar Venta</h2>
 
 <form asp-action="InsertarVenta" asp-controller="Ventas" method="post">
     <div class="form-group">
         <label for="UsuarioID">Usuario</label>
-        <input asp-for="UsuarioID" class="form-control" />
+        <select asp-for="UsuarioID" class="form-control">
+            <option value="">-- Selecciona un Usuario --</option>
+            @{
+                var usuarios = ViewBag.DropDownUsuarios as List<Usuarios>;
+                if (usuarios != null)
+                {
+                    @foreach (var item in usuarios)
+                    {
+                        <option value="@item.UsuarioID">@item.Nombre</option>
+                    }
+                }
+            }
+        </select>
     </div>
+
     <div class="form-group">
         <label for="ProductoID">Producto</label>
-        <input asp-for="ProductoID" class="form-control" />
+        <select asp-for="ProductoID" class="form-control">
+            <option value="">-- Selecciona un Producto --</option>
+            @{
+                var productos = ViewBag.DropDownProductos as List<Productos>;
+                if (productos != null)
+                {
+                    @foreach (var item in productos)
+                    {
+                        <option value="@item.ProductoID">@item.NombreProducto</option>
+                    }
+                }
+            }
+        </select>
     </div>
+
     <div class="form-group">
         <label for="Cantidad">Cantidad</label>
         <input asp-for="Cantidad" type="number" class="form-control" />
     </div>
+
     <div class="form-group">
         <label for="Total">Total</label>
         <input asp-for="Total" type="number" step="0.01" class="form-control" />
     </div>
+
     <div class="form-group">
         <label for="FechaVenta">Fecha</label>
         <input asp-for="FechaVenta" type="date" class="form-control" />
     </div>
+
     <input type="submit" class="btn btn-primary" value="Procesar">
 </form>

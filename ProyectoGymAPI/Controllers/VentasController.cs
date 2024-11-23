@@ -27,8 +27,8 @@ namespace ProyectoGymAPI.Controllers
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var procedimiento = "GetVentas";
-                var ventas = await context.QueryAsync<VentasViewModel>(procedimiento);
+                var procedimiento = "sp_ObtenerVentas";
+                var ventas = await context.QueryAsync<VentaViewModel>(procedimiento);
                 return Ok(ventas);
             }
         }
@@ -47,7 +47,7 @@ namespace ProyectoGymAPI.Controllers
                     venta.FechaVenta,
                     venta.Total
                 };
-                await connection.ExecuteAsync("InsertVenta", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("sp_InsertarVenta", parameters, commandType: CommandType.StoredProcedure);
                 return Ok();
             }
         }
@@ -57,10 +57,36 @@ namespace ProyectoGymAPI.Controllers
         {
             using (var connection = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                await connection.ExecuteAsync("DeleteVenta", new { VentaID = id }, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("sp_EliminarVentas", new { VentaID = id }, commandType: CommandType.StoredProcedure);
                 return Ok();
+            }
+        }
+
+
+        [HttpGet]
+        [Route("ObtenerProductos")]
+        public IActionResult ObtenerProductos()
+        {
+            using (var connection = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = connection.Query <Productos>("sp_ObtenerProductos", new { });
+
+                if (result.Any())
+                {
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = result;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No hay productos registrados en este momento";
+                }
+
+                return Ok(respuesta);
+            }
+            
             }
         }
     }
 
-}

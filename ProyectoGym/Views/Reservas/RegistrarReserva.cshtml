@@ -2,10 +2,22 @@
 
 <h2>Crear Reserva</h2>
 
-<form asp-action="CrearReserva" asp-controller="Reservas" method="post">
+<form asp-action="InsertarReserva" asp-controller="Reservas" method="post">
     <div class="form-group">
         <label for="UsuarioID">Usuario</label>
-        <input asp-for="UsuarioID" class="form-control" />
+        <select asp-for="UsuarioID" class="form-control">
+            <option value="">-- Selecciona un Usuario --</option>
+            @{
+                var usuarios = ViewBag.DropDownUsuarios as List<Usuarios>;
+                if (usuarios != null)
+                {
+                    @foreach (var item in usuarios)
+                    {
+                        <option value="@item.UsuarioID">@item.Nombre</option>
+                    }
+                }
+            }
+        </select>
     </div>
     <div class="form-group">
         <label for="FechaReserva">Fecha</label>
@@ -28,7 +40,19 @@
     </div>
     <div class="form-group">
         <label for="MaquinaID">Máquina</label>
-        <input asp-for="MaquinaID" class="form-control" />
+        <select asp-for="MaquinaID" class="form-control">
+            <option value="">-- Selecciona un Usuario --</option>
+            @{
+                var maquinas = ViewBag.DropDownMaquinas as List<Maquinas>;
+                if (maquinas != null)
+                {
+                    @foreach (var item in maquinas)
+                    {
+                        <option value="@item.MaquinaID">@item.Nombre</option>
+                    }
+                }
+            }
+        </select>
     </div>
     <input type="submit" class="btn btn-primary" value="Procesar">
 </form>

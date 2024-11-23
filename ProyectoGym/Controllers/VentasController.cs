@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProyectoGym.Models;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace ProyectoGym.Controllers
 {
@@ -26,7 +28,7 @@ namespace ProyectoGym.Controllers
                 var response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
-                var ventas = await response.Content.ReadFromJsonAsync<List<VentasViewModel>>();
+                var ventas = await response.Content.ReadFromJsonAsync<List<VentaViewModel>>();
                 return View(ventas);
             }
             catch (Exception ex)
@@ -40,6 +42,8 @@ namespace ProyectoGym.Controllers
         // GET: Crear Venta
         public IActionResult RegistrarVenta()
         {
+            ConsultarProductos();
+            ConsultarUsuarios();
             return View();
         }
 
@@ -92,6 +96,46 @@ namespace ProyectoGym.Controllers
             {
           
                 return StatusCode(500, $"Excepción al eliminar la venta : {ex.Message}");
+            }
+        }
+
+        private void ConsultarProductos()
+        {
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:UrlApi").Value + "Ventas/ObtenerProductos";
+            
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine($"Contenido de la respuesta: {responseBody}");
+
+                if (result != null && result.Codigo == 0)   
+                {
+                    ViewBag.DropDownProductos = result.Contenido;
+                    ViewBag.DropDownProductos = JsonSerializer.Deserialize<List<Productos>>((JsonElement)result.Contenido!);
+                }
+            }
+        }
+
+        private void ConsultarUsuarios()
+        {
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuariosLista";
+
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine($"Contenido de la respuesta: {responseBody}");
+
+                if (result != null && result.Codigo == 0)
+                {
+                    ViewBag.DropDownUsuarios = result.Contenido;
+                    ViewBag.DropDownUsuarios = JsonSerializer.Deserialize<List<Usuarios>>((JsonElement)result.Contenido!);
+                }
             }
         }
     }

@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var RoleName = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,7 +22,7 @@
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="@Url.Action("Index","Home")">Neon Fitness</a>
+        <a class="navbar-brand ps-3" href="@Url.Action("Inicio","Home")">Neon Fitness</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
@@ -46,121 +51,385 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Core</div>
-                         <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
+                        <div class="sb-sidenav-menu-heading" style="margin-left: 10px">Core</div>
+                        <div class="sb-sidenav-footer" style="background-color: #212529">
+                            <div class="small" style="margin-left: 20px">
+                                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                    {
+                                        <span>Logged in as: @User.FindFirstValue(ClaimTypes.Name)</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Logged in as: Invitado.</span>
+                                    }
+                            </div>
+                            @{
+                                if (RoleName == "1")
+                                {
+                                    <a class="nav-link" href="@Url.Action("Index","Home")">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                        Dashboard
+                                    </a>
 
-                </div>
-                        <a class="nav-link" href="@Url.Action("Index","Home")">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                        </a>
-                       
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
-                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                            Acceso
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
+                                    <!-- Sección Acceso -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                        Acceso
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
-                        <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
-                                <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
-                                <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
-                                <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
-                            </nav>
-                        </div>
+                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
+                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
+                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
+                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
+                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
+                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
+                                        </nav>
+                                    </div>
 
-                        <!-- Sección Usuarios -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            Usuarios
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
+                                    <!-- Sección Usuarios -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Usuarios
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
-                                <a class="nav-link" href="@Url.Action("UsuariosLista","Usuarios")">Usuarios Registrados</a>
-                                <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>  
-                              
-                            </nav>
-                        </div> <!-- Sección Usuarios -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
-                            <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
- Maquinas
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
+                                    <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("UsuariosLista","Usuarios")">Usuarios Registrados</a>
+                                            <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a> 
+                                        </nav>
+                                    </div>
+                                    
+                                    <!-- Sección Maquinas -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                                        Maquinas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
-                        <div class="collapse" id="collapseMaquinas" aria-labelledby="headingMaquinas" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionMaquinas">
-                              
-                                <a class="nav-link" href="@Url.Action("MaquinasLista","Maquinas")">Maquinas Registradas</a> 
-                                <a class="nav-link" href="@Url.Action("MaquinasC","Maquinas")">Agregar Maquinas </a> 
-                             
-                            </nav>
-                        </div>
-                        </div>
+                                    <div class="collapse" id="collapseMaquinas" aria-labelledby="headingMaquinas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionMaquinas">
+                                            <a class="nav-link" href="@Url.Action("MaquinasLista","Maquinas")">Maquinas Registradas</a> 
+                                            <a class="nav-link" href="@Url.Action("MaquinasC","Maquinas")">Agregar Maquinas </a> 
+                                        </nav>
+                                    </div>
 
-                        <!-- Sección Pagos -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            Pagos
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
+                                    <!-- Sección Pagos -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                        Pagos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
-                                <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
-                                <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
-                            </nav>
-                        </div>
+                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
+                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
+                                        </nav>
+                                    </div>
 
-                        <!-- Sección Reservas -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            Reservas
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
+                                    <!-- Sección Reservas -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReservas" aria-expanded="false" aria-controls="collapseReservas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Reservas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
-                                <a class="nav-link" href=@Url.Action("ConsultarReservas","Reservas")>Consultar Reservas</a>
-                                <a class="nav-link" href="@Url.Action("RegistrarReserva","Reservas")">Registrar Reservas</a>
-                            </nav>
-                        </div>
+                                    <div class="collapse" id="collapseReservas" aria-labelledby="headingReservas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionReservas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarReservas","Reservas")>Consultar Reservas</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarReserva","Reservas")">Registrar Reservas</a>
+                                        </nav>
+                                    </div>
 
-                        <!-- Sección Ventas -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            Ventas
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
+                                    <!-- Sección Ventas -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVentas" aria-expanded="false" aria-controls="collapseVentas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-chart-pie"></i></div>
+                                        Ventas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    
+                                    <div class="collapse" id="collapseVentas" aria-labelledby="headingVentas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionVentas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarVentas","Ventas")>Consultar Ventas</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarVenta","Ventas")">Registrar Ventas</a>
+                                        </nav>
+                                    </div>
+                                }
+                                else if (RoleName == "2")
+                                {
+                                    <a class="nav-link" href="@Url.Action("Index","Home")">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                        Dashboard
+                                    </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
-                                <a class="nav-link" href=@Url.Action("ConsultarVentas","Ventas")>Consultar Ventas</a>
-                                <a class="nav-link" href="@Url.Action("RegistrarVenta","Ventas")">Registrar Ventas</a>
-                            </nav>
-                        </div>
+                                    <!-- Sección Acceso -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                        Acceso
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
+                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
+                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
+                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
+                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
+                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
+                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
+                                        </nav>
+                                    </div>
 
+                                    <!-- Sección Usuarios -->
+                                    <!-- LOS INSTRUCTORES SOLO PUEDEN VER A LOS CLIENTES -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Usuarios
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
 
+                                    <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Maquinas -->
+                                    <!-- LOS INSTRUCTORES SOLO PUEDEN CONSULTAR POR MAQUINAS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                                        Maquinas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseMaquinas" aria-labelledby="headingMaquinas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionMaquinas">
+                                            <a class="nav-link" href="@Url.Action("MaquinasLista","Maquinas")">Maquinas Registradas</a>
+                                            <a class="nav-link" href="@Url.Action("MaquinasC","Maquinas")">Agregar Maquinas </a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Pagos -->
+                                    <!-- LOS INSTRUCTORES PUEDEN REGISTRAR Y CONSULTAR PAGOS RELACIONADOS A EL -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                        Pagos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
+                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Reservas -->
+                                    <!-- LOS INSTRUCTORES PUEDEN REGISTRAR Y CONSULTAR RESERVAS RELACIONADAS A EL -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReservas" aria-expanded="false" aria-controls="collapseReservas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Reservas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseReservas" aria-labelledby="headingReservas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionReservas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarReservas","Reservas")>Consultar Reservas</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarReserva","Reservas")">Registrar Reservas</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Ventas -->
+                                    <!-- LOS INSTRUCTORES PUEDEN REGISTRAR Y CONSULTAR RESERVAS RELACIONADOS A EL -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVentas" aria-expanded="false" aria-controls="collapseVentas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-chart-pie"></i></div>
+                                        Ventas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseVentas" aria-labelledby="headingVentas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionVentas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarVentas","Ventas")>Consultar Ventas</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarVenta","Ventas")">Registrar Ventas</a>
+                                        </nav>
+                                    </div>
+                                }
+                                else if (RoleName == "3")
+                                {
+                                    <a class="nav-link" href="@Url.Action("Index","Home")">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                        Dashboard
+                                    </a>
+
+                                    <!-- Sección Acceso -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                        Acceso
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
+                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
+                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
+                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
+                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
+                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Usuarios -->
+                                    <!-- LOS CLIENTES NO PUEDEN VER LOS USUARIOS -->
+
+                                    <!-- Sección Maquinas -->
+                                    <!-- LOS CLIENTES PODRIAN VER LAS MAQUINAS PERO COMO CATALOGO EN LUGAR DE VER UNA LISTA DE ESTAS -->
+
+                                    <!-- Sección Pagos -->
+                                    <!-- LOS CLIENTES PUEDEN CONSULTAR PAGOS PERO SOLO DE ELLOS MISMOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                        Pagos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
+                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Reservas -->
+                                    <!-- LOS CLIENTES PUEDEN CONSULTAR RESERVAS PERO SOLO DE ELLOS MISMOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReservas" aria-expanded="false" aria-controls="collapseReservas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Reservas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseReservas" aria-labelledby="headingReservas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionReservas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarReservas","Reservas")>Consultar Reservas</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Ventas -->
+                                    <!-- LOS CLIENTES NO PUEDEN VER LAS VENTAS -->
+                                } else if (RoleName == "4")
+                                {
+                                    <a class="nav-link" href="@Url.Action("Index","Home")">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                        Dashboard
+                                    </a>
+
+                                    <!-- Sección Acceso -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                        Acceso
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
+                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
+                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
+                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
+                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
+                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Usuarios -->
+                                    <!-- LOS EMPLEADOS NO PUEDEN VER LOS USUARIOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Usuarios
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Maquinas -->
+                                    <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LAS MAQUINAS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                                        Maquinas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseMaquinas" aria-labelledby="headingMaquinas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionMaquinas">
+                                            <a class="nav-link" href="@Url.Action("MaquinasLista","Maquinas")">Maquinas Registradas</a>
+                                            <a class="nav-link" href="@Url.Action("MaquinasC","Maquinas")">Agregar Maquinas </a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Pagos -->
+                                    <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LOS PAGOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                        Pagos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
+                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Reservas -->
+                                    <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LAS RESERVAS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReservas" aria-expanded="false" aria-controls="collapseReservas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                        Reservas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseReservas" aria-labelledby="headingReservas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionReservas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarReservas","Reservas")>Consultar Reservas</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarReserva","Reservas")">Registrar Reservas</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Ventas -->
+                                    <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LAS VENTAS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVentas" aria-expanded="false" aria-controls="collapseVentas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-chart-pie"></i></div>
+                                        Ventas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseVentas" aria-labelledby="headingVentas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionVentas">
+                                            <a class="nav-link" href=@Url.Action("ConsultarVentas","Ventas")>Consultar Ventas</a>
+                                            <a class="nav-link" href="@Url.Action("RegistrarVenta","Ventas")">Registrar Ventas</a>
+                                        </nav>
+                                    </div>
+                                }
+                            } 
+                            </div>
                     </div>
                 </div>
             </nav>
         </div>
-
-
-
-                        <div class="sb-sidenav-menu-heading">Addons</div>
-                        <a class="nav-link" href="charts.html">
-                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                            Charts
-                        </a>
-                        <a class="nav-link" href="tables.html">
-                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                            Tables
-                        </a>
-                    </div>
+        <div class="sb-sidenav-menu-heading">Addons</div>
+        <a class="nav-link" href="charts.html">
+            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+            Charts
+        </a>
+        <a class="nav-link" href="tables.html">
+            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+            Tables
+        </a>
+    </div>
      
                
       

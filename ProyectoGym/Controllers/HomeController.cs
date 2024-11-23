@@ -15,6 +15,8 @@ namespace ProyectoGym.Controllers
 
         public IActionResult Inicio()
         {
+            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+            ViewBag.NombreUsuario = nombreUsuario ?? "Invitado";
             return View();
         }
 
@@ -23,11 +25,6 @@ namespace ProyectoGym.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
+      
     }
 }

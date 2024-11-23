@@ -1,10 +1,11 @@
 ﻿namespace ProyectoGym.Models
 {
-    public class VentasViewModel
+    public class VentaViewModel
     {
 
         public int VentaID { get; set; }
         public int? UsuarioID { get; set; }
+
         public int? ProductoID { get; set; }
 
         public string UsuarioNombre { get; set; }

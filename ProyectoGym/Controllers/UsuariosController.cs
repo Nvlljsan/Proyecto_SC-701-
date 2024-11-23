@@ -40,6 +40,8 @@ namespace ProyectoGym.Controllers
             }
         }
 
+
+
         [HttpGet]
         public IActionResult UsuarioC()
         {
