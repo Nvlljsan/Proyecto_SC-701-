@@ -2,6 +2,7 @@
 using ProyectoGym.Models;
 using ProyectoGym.Services;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace ProyectoGym.Controllers
@@ -23,7 +24,9 @@ namespace ProyectoGym.Controllers
         [HttpGet]
         public IActionResult ClientesLista()
         {
-            var consecutivo = long.Parse(HttpContext.Session.GetString("UsuarioID")!.ToString());
+           ;
+            var consecutivo = long.Parse(@User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString());
+
 
             using (var client = _http.CreateClient())
             {
