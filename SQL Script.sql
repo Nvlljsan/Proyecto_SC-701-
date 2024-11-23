@@ -437,7 +437,8 @@ BEGIN
 	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
     VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
 END;
-
+GO
+	
 CREATE PROCEDURE [dbo].[UsuarioR] ---- READ ---- 
     @UsuarioID INT
 AS
@@ -446,7 +447,8 @@ BEGIN
     FROM Usuarios
     WHERE UsuarioID = @UsuarioID;
 END;
-
+GO
+	
 CREATE PROCEDURE [dbo].[UsuarioU] ---- UPDATE ----
     @UsuarioID INT,
     @Nombre NVARCHAR(50),
@@ -468,7 +470,8 @@ BEGIN
         RolID = @RolID
     WHERE UsuarioID = @UsuarioID;
 END;
-
+GO
+	
 CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE ----
     @UsuarioID INT
 AS
@@ -476,7 +479,15 @@ BEGIN
     DELETE FROM Usuarios
     WHERE UsuarioID = @UsuarioID;
 END;
+GO
 
+CREATE PROCEDURE UsuariosLista
+AS
+BEGIN
+    SELECT UsuarioID, Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro, RolID
+    FROM Usuarios;
+END;
+GO
 -------------------------- SP LOGEO --------------------------
 CREATE PROCEDURE [dbo].[Registro] ---- FUNCIONAL ----
 	@Nombre NVARCHAR(50),
