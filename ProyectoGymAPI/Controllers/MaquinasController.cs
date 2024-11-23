@@ -79,7 +79,7 @@ namespace ProyectoGymAPI.Controllers
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-                var result = context.QueryFirstOrDefault<Maquinas>("ConsultarMaquinas", new { MaquinaID });
+                var result = context.QueryFirstOrDefault<Maquinas>("MaquinasR", new { MaquinaID });
 
                 if (result != null)
                 {

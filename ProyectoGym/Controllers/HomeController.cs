@@ -15,6 +15,8 @@ namespace ProyectoGym.Controllers
 
         public IActionResult Inicio()
         {
+            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+            ViewBag.NombreUsuario = nombreUsuario ?? "Invitado";
             return View();
         }
 

@@ -31,30 +31,25 @@ namespace ProyectoGymAPI.Controllers
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-                var result = context.QueryFirstOrDefault<Usuarios>("InicioSesion", new { model.Email, model.Contrasena });
+                var contrasenaCifrada = Encrypt(model.Contrasena);
 
-                if (result != null)
+                var usuario = context.QueryFirstOrDefault<Usuarios>("InicioSesion", new {model.Email, Contrasena = contrasenaCifrada});
+
+                if (usuario != null)
                 {
-                    if (result.Contrasena == model.Contrasena)
-                    {
-                        respuesta.Codigo = 0;
-                        respuesta.Contenido = result; // El usuario es válido
-                    }
-                    else
-                    {
-                        respuesta.Codigo = -1;
-                        respuesta.Mensaje = "Contraseña incorrecta";
-                    }
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = usuario; // Usuario válido
                 }
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Su información no se ha validado correctamente";
+                    respuesta.Mensaje = "Correo o contraseña incorrectos.";
                 }
 
                 return Ok(respuesta);
             }
         }
+
 
 
         [HttpPost]
@@ -65,6 +60,8 @@ namespace ProyectoGymAPI.Controllers
             {
                 model.RolID = 3;
             }
+
+            model.Contrasena = Encrypt(model.Contrasena);
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
