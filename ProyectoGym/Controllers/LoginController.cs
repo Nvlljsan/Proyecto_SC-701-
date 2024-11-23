@@ -41,7 +41,8 @@ namespace ProyectoGym.Controllers
 
                 if (result != null && result.Codigo == 0)
                 {
-                    var datosUsuario = JsonSerializer.Deserialize<Usuarios>((JsonElement)result.Contenido!);
+                  var datosUsuario = JsonSerializer.Deserialize<Usuarios>((JsonElement)result.Contenido!);
+               
 
                     HttpContext.Session.SetString("UsuarioID", datosUsuario!.UsuarioID.ToString());
                     HttpContext.Session.SetString("Nombre", datosUsuario!.Nombre);

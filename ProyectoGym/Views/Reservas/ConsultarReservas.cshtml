@@ -1,0 +1,46 @@
+﻿@model List<ProyectoGym.Models.ReservasViewModel>
+
+<h2>Consultar Reservas</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Hora Inicio</th>
+            <th>Hora Fin</th>
+            <th>Estado</th>
+            <th>Máquina</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reserva in Model)
+        {
+            <tr>
+                <td>@reserva.UsuarioNombre</td>
+                <td>@reserva.FechaReserva.ToShortDateString()</td>
+                <td>@reserva.HoraInicio</td>
+                <td>@reserva.HoraFin</td>
+                <td>@(reserva.Estado ? "Activa" : "Cancelada")</td>
+                <td>@(string.IsNullOrEmpty(reserva.MaquinaNombre) ? "Sin Máquina" : reserva.MaquinaNombre)</td>
+                <td>
+                    <!-- Botón para Activar o Cancelar -->
+                    <form asp-action="ActualizarEstadoReserva" asp-controller="Reservas" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@reserva.ReservaID" />
+                        <input type="hidden" name="estado" value="@(reserva.Estado ? 0 : 1)" />
+                        <button type="submit" class="btn btn-sm @(reserva.Estado ? "btn-danger" : "btn-success")">
+                            @(reserva.Estado ? "Cancelar" : "Activar")
+                        </button>
+                    </form>
+
+                    <!-- Botón para Eliminar -->
+                    <form asp-action="EliminarReserva" asp-controller="Reservas" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@reserva.ReservaID" />
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
