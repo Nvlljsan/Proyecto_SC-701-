@@ -1,6 +1,6 @@
 ﻿namespace ProyectoGymAPI.Models
 {
-    public class VentasViewModel
+    public class VentaViewModel
     {
 
         public int VentaID { get; set; }

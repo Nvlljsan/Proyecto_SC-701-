@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using ProyectoGym.Models;
 using System.Net.Http;
+using System.Text.Json;
 using static System.Net.WebRequestMethods;
 
 
@@ -43,6 +44,7 @@ namespace ProyectoGym.Controllers
       
         public IActionResult RegistrarPago()
         {
+            ConsultarUsuarios();
             return View();
         }
 
@@ -95,6 +97,26 @@ namespace ProyectoGym.Controllers
             {
  
                 return StatusCode(500, $"Excepción al eliminar el pago: {ex.Message}");
+            }
+        }
+
+        private void ConsultarUsuarios()
+        {
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuariosLista";
+
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine($"Contenido de la respuesta: {responseBody}");
+
+                if (result != null && result.Codigo == 0)
+                {
+                    ViewBag.DropDownUsuarios = result.Contenido;
+                    ViewBag.DropDownUsuarios = JsonSerializer.Deserialize<List<Usuarios>>((JsonElement)result.Contenido!);
+                }
             }
         }
     }

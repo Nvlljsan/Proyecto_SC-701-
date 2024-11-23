@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProyectoGym.Models;
+using System.Text.Json;
 
 
 namespace ProyectoGym.Controllers
@@ -41,6 +42,8 @@ namespace ProyectoGym.Controllers
         // GET: Crear Reserva
         public IActionResult RegistrarReserva()
         {
+            ConsultarUsuarios();
+            ConsultarMaquinas();
             return View();
         }
 
@@ -62,13 +65,13 @@ namespace ProyectoGym.Controllers
                 }
 
                 ModelState.AddModelError(string.Empty, "Error al registrar la reserva.");
-                return View("RegistrarPago", reserva);
+                return View("RegistrarReserva", reserva);
             }
             catch (Exception ex)
             {
 
                 ModelState.AddModelError(string.Empty, $"Excepción: {ex.Message}");
-                return View("RegistrarPago", reserva);
+                return View("RegistrarReserva", reserva);
             }
         }
 
@@ -120,6 +123,46 @@ namespace ProyectoGym.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"Excepción: {ex.Message}");
                 return RedirectToAction(nameof(ConsultarReservas));
+            }
+        }
+
+        private void ConsultarMaquinas()
+        {
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:UrlApi").Value + "Maquinas/MaquinasLista";
+
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine($"Contenido de la respuesta: {responseBody}");
+
+                if (result != null && result.Codigo == 0)
+                {
+                    ViewBag.DropDownMaquinas = result.Contenido;
+                    ViewBag.DropDownMaquinas = JsonSerializer.Deserialize<List<Maquinas>>((JsonElement)result.Contenido!);
+                }
+            }
+        }
+
+        private void ConsultarUsuarios()
+        {
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuariosLista";
+
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine($"Contenido de la respuesta: {responseBody}");
+
+                if (result != null && result.Codigo == 0)
+                {
+                    ViewBag.DropDownUsuarios = result.Contenido;
+                    ViewBag.DropDownUsuarios = JsonSerializer.Deserialize<List<Usuarios>>((JsonElement)result.Contenido!);
+                }
             }
         }
 
