@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marip\\OneDrive\\Desktop\\ProyectoPrograAvanzada\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj": {}
+    "D:\\Users\\jdsan\\source\\repos\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marip\\OneDrive\\Desktop\\ProyectoPrograAvanzada\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj": {
+    "D:\\Users\\jdsan\\source\\repos\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marip\\OneDrive\\Desktop\\ProyectoPrograAvanzada\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj",
+        "projectUniqueName": "D:\\Users\\jdsan\\source\\repos\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj",
         "projectName": "ProyectoGymAPI",
-        "projectPath": "C:\\Users\\marip\\OneDrive\\Desktop\\ProyectoPrograAvanzada\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj",
-        "packagesPath": "C:\\Users\\marip\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marip\\OneDrive\\Desktop\\ProyectoPrograAvanzada\\Proyecto_SC-701-\\ProyectoGymAPI\\obj\\",
+        "projectPath": "D:\\Users\\jdsan\\source\\repos\\Proyecto_SC-701-\\ProyectoGymAPI\\ProyectoGymAPI.csproj",
+        "packagesPath": "C:\\Users\\Jdsan\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\jdsan\\source\\repos\\Proyecto_SC-701-\\ProyectoGymAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\marip\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Jdsan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
