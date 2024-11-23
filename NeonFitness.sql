@@ -128,9 +128,6 @@ INSERT INTO Roles (RolID, NombreRol) VALUES (3, 'Cliente');
 INSERT INTO Roles (RolID, NombreRol) VALUES (4, 'Empleado');
 
 
-
-
-
 ----------------------------- STORED PROCEDURES ----------------------------
 ----------------------------- Clientes ----------------------------
 Create PROCEDURE dbo.ActualizarCliente
@@ -458,6 +455,15 @@ BEGIN
     FROM Usuarios;
 END;
 GO
+
+-------------------------- SP ROLES --------------------------
+CREATE PROCEDURE [dbo].[RolesLista]
+AS
+BEGIN
+    SELECT RolID, NombreRol
+    FROM Roles;
+END;
+GO
 -------------------------- SP LOGEO --------------------------
 CREATE PROCEDURE [dbo].[Registro] ---- FUNCIONAL ----
 	@Nombre NVARCHAR(50),
@@ -472,6 +478,7 @@ BEGIN
 	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
     VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
 END;
+GO
 
 CREATE PROCEDURE [dbo].[InicioSesion] ---- SIN PROBAR ----
 	@Email NVARCHAR(100),
@@ -482,6 +489,7 @@ BEGIN
     FROM Usuarios
     WHERE Email = @Email AND Contrasena = @Contrasena;
 END;
+GO
 
 CREATE PROCEDURE [dbo].[RecuperarContrasena] ---- SIN PROBAR ----
 	@Email NVARCHAR(100)
@@ -491,7 +499,7 @@ BEGIN
     FROM Usuarios
     WHERE Email = @Email;
 END:
-
+GO
 
 
 -----------------------------  Reservas-----------------------------
@@ -504,6 +512,7 @@ BEGIN
     INNER JOIN Usuarios u ON r.UsuarioID = u.UsuarioID
     LEFT JOIN Maquinas m ON r.MaquinaID = m.MaquinaID;
 END;
+GO
 
 Create PROCEDURE sp_InsertarReserva
     @UsuarioID INT,
@@ -516,6 +525,7 @@ BEGIN
     INSERT INTO Reservas (UsuarioID, FechaReserva, HoraInicio, HoraFin, MaquinaID)
     VALUES (@UsuarioID, @FechaReserva, @HoraInicio, @HoraFin, @MaquinaID);
 END;
+GO
 
 CREATE PROCEDURE sp_EliminarReserva
     @ReservaID INT
@@ -523,6 +533,7 @@ AS
 BEGIN
     DELETE FROM Reservas WHERE ReservaID = @ReservaID;
 END;
+GO
 
 Create PROCEDURE sp_ActualizarEstadoReserva
     @ReservaID INT
@@ -532,7 +543,7 @@ BEGIN
     SET Estado = Case WHEN Estado = 1 THEN 0 Else 1 end
     WHERE ReservaID = @ReservaID;
 END;
-
+GO
 -----------------------------  Pagos-----------------------------
 Create PROCEDURE sp_ObtenerPagos
 AS
@@ -542,6 +553,7 @@ BEGIN
     FROM Pagos p
     INNER JOIN Usuarios u ON p.UsuarioID = u.UsuarioID;
 END;
+GO
 
 CREATE PROCEDURE sp_InsertarPago
     @UsuarioID INT,
@@ -553,6 +565,7 @@ BEGIN
     INSERT INTO Pagos (UsuarioID, Monto, FechaPago, MetodoPago)
     VALUES (@UsuarioID, @Monto, @FechaPago, @MetodoPago);
 END;
+GO
 
 CREATE PROCEDURE sp_EliminarPago
     @PagoID INT
@@ -560,10 +573,11 @@ AS
 BEGIN
     DELETE FROM Pagos WHERE PagoID = @PagoID;
 END;
+GO
 
 -----------------------------Ventas-----------------------------
 
-ALTER PROCEDURE sp_ObtenerVentas
+CREATE PROCEDURE sp_ObtenerVentas
 AS
 BEGIN
     SELECT v.VentaID, v.UsuarioID, v.ProductoID, v.Cantidad, v.FechaVenta, v.Total, 
@@ -572,7 +586,7 @@ BEGIN
     INNER JOIN Usuarios u ON v.UsuarioID = u.UsuarioID
     INNER JOIN Productos p ON v.ProductoID = p.ProductoID;
 END;
-
+GO
 
 CREATE PROCEDURE sp_InsertarVenta
     @UsuarioID INT,
@@ -585,6 +599,7 @@ BEGIN
     INSERT INTO Ventas (UsuarioID, ProductoID, Cantidad, FechaVenta, Total)
     VALUES (@UsuarioID, @ProductoID, @Cantidad, @FechaVenta, @Total);
 END;
+GO
 
 CREATE PROCEDURE sp_EliminarVentas
     @VentaID INT
@@ -592,6 +607,7 @@ AS
 BEGIN
     DELETE FROM Ventas WHERE VentaID = @VentaID;
 END;
+GO
 
 CREATE PROCEDURE sp_ObtenerProductos
 AS
@@ -608,8 +624,13 @@ BEGIN
     WHERE 
         Stock > 0; -- Filtra solo los productos que tienen stock disponible
 END;
+GO
 
-
+------------------------------[UPDATES]------------------------------
+----------------------------- Usuarios -----------------------------
+UPDATE Usuarios
+SET RolID = 1
+WHERE UsuarioID = 1;
 
 
 
