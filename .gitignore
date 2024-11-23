@@ -379,3 +379,5 @@ ProyectoGymAPI/obj/project.nuget.cache
 ProyectoGymAPI/obj/ProyectoGymAPI.csproj.nuget.dgspec.json
 ProyectoGymAPI/obj/ProyectoGymAPI.csproj.nuget.g.props
 ProyectoGymAPI/appsettings.json
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.AssemblyInfo.cs
+ProyectoGymAPI/obj/Debug/net8.0/ProyectoGymAPI.AssemblyInfoInputs.cache
