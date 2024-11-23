@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoGym.Models;
 using ProyectoGym.Services;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace ProyectoGym.Controllers
@@ -139,7 +140,7 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
+       
 
 
 

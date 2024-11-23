@@ -35,7 +35,7 @@ namespace ProyectoGymAPI.Controllers
 
                 if (result != null)
                 {
-                    if (Decrypt(result.Contrasena) == model.Contrasena)
+                    if (result.Contrasena == model.Contrasena)
                     {
                         respuesta.Codigo = 0;
                         respuesta.Contenido = result; // El usuario es válido
