@@ -46,7 +46,15 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">Core</div>
+<<<<<<< Updated upstream
                         <a class="nav-link" href="@Url.Action("Index","Home")">
+=======
+                         <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+
+                </div>
+                        <a class="nav-link" href="@Url.Action("Inicio","Home")">
+>>>>>>> Stashed changes
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                         </a>
@@ -76,16 +84,33 @@
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                 <a class="nav-link" href="@Url.Action("UsuariosLista","Usuarios")">Usuarios Registrados</a>
                             </nav>
+<<<<<<< Updated upstream
+=======
+                        </div> <!-- Sección Usuarios -->
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
+                            <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+ Maquinas
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+
+                        <div class="collapse" id="collapseMaquinas" aria-labelledby="headingMaquinas" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionMaquinas">
+                              
+                                <a class="nav-link" href="@Url.Action("MaquinasLista","Maquinas")">Maquinas Registradas</a> 
+                                <a class="nav-link" href="@Url.Action("MaquinasC","Maquinas")">Agregar Maquinas </a> 
+                             
+                            </nav>
+>>>>>>> Stashed changes
                         </div>
 
                         <!-- Sección Pagos -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapseUsuarios">
                             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                             Pagos
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                        <div class="collapse" id="collapsePagos" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                 <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
                                 <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
@@ -93,13 +118,13 @@
                         </div>
 
                         <!-- Sección Reservas -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReservas" aria-expanded="false" aria-controls="collapseUsuarios">
                             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                             Reservas
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                        <div class="collapse" id="collapseReservas" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                 <a class="nav-link" href=@Url.Action("ConsultarReservas","Reservas")>Consultar Reservas</a>
                                 <a class="nav-link" href="@Url.Action("RegistrarReserva","Reservas")">Registrar Reservas</a>
@@ -107,18 +132,20 @@
                         </div>
 
                         <!-- Sección Ventas -->
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVentas" aria-expanded="false" aria-controls="collapseUsuarios">
                             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                             Ventas
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
 
-                        <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                        <div class="collapse" id="collapseVentas" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                 <a class="nav-link" href=@Url.Action("ConsultarVentas","Ventas")>Consultar Ventas</a>
                                 <a class="nav-link" href="@Url.Action("RegistrarVenta","Ventas")">Registrar Ventas</a>
                             </nav>
                         </div>
+                        </div>
+
 
 
 
