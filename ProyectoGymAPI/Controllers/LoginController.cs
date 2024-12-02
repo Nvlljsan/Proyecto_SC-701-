@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using ProyectoGymAPI.Models;
+using ProyectoGymAPI.Models.Requests;
 using System.Data;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -50,7 +53,78 @@ namespace ProyectoGymAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("RecuperarAcceso")]
+        public IActionResult RecuperarAcceso(Usuarios model)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
 
+                var usuario = context.QueryFirstOrDefault<Usuarios>("SELECT * FROM Usuarios WHERE Email = @Email",
+                    new { model.Email });
+
+                if (usuario != null)
+                {
+                    string token = GenerarCodigo();
+                    DateTime vigencia = DateTime.Now.AddMinutes(30);
+
+                    context.Execute("INSERT INTO RecuperarTokens (UsuarioID, Token, FechaExpiracion) VALUES (@UsuarioID, @Token, @FechaExpiracion)",
+                        new { usuarioID = usuario.UsuarioID, Token = Encrypt(token), FechaExpiracion = vigencia });
+
+                    var ruta = Path.Combine(_env.ContentRootPath, "Template", "RecuperarAcceso.html");
+                    var html = System.IO.File.ReadAllText(ruta);
+
+                    html = html.Replace("@@Nombre", usuario.Nombre);
+                    html = html.Replace("@@Contrasenna", token);
+                    html = html.Replace("@@Vencimiento", vigencia.ToString("dd/MM/yyyy hh:mm tt"));
+
+                    EnviarCorreo(model.Email, "Recuperar Accesos Sistema", html);
+
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = new { usuario.Nombre, TokenEnviado = true };
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "Su información no se encontró en nuestro sistema";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+        [HttpPost]
+        [Route("RestablecerContrasena")]
+        public IActionResult RestablecerContrasena(RestablecerRequest model)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+
+                var tokenInfo = context.QueryFirstOrDefault("SELECT * FROM RecuperarTokens WHERE Token = @Token AND FechaExpiracion > GETDATE()",
+                    new { Token = Encrypt(model.Token) });
+
+                if (tokenInfo != null)
+                {
+                    context.Execute("UPDATE Usuarios SET Contrasena = @NuevaContrasenna WHERE UsuarioID = @UsuarioID",
+                        new { usuarioID = tokenInfo.UsuarioID, NuevaContrasenna = Encrypt(model.NuevaContrasena) });
+
+                    context.Execute("DELETE FROM RecuperarTokens WHERE Token = @Token",
+                        new { Token = Encrypt(model.Token) });
+
+                    respuesta.Codigo = 0;
+                    respuesta.Mensaje = "La contraseña se ha actualizado correctamente.";
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "El token no es válido o ha expirado.";
+                }
+
+                return Ok(respuesta);
+            }
+        }
 
         [HttpPost]
         [Route("Registro")]
@@ -137,5 +211,38 @@ namespace ProyectoGymAPI.Controllers
                 }
             }
         }
+        private void EnviarCorreo(string destino, string asunto, string contenido)
+        {
+            string cuenta = _conf.GetSection("Variables:CorreoEmail").Value!;
+            string contrasenna = _conf.GetSection("Variables:ClaveEmail").Value!;
+
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress(cuenta);
+            message.To.Add(new MailAddress(destino));
+            message.Subject = asunto;
+            message.Body = contenido;
+            message.Priority = MailPriority.Normal;
+            message.IsBodyHtml = true;
+
+            SmtpClient client = new SmtpClient("smtp.office365.com", 587);
+            client.Credentials = new NetworkCredential(cuenta, contrasenna);
+            client.EnableSsl = true;
+
+            client.Send(message);            
+        }
+
+        private string GenerarCodigo()
+        {
+            int length = 8;
+            const string valid = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
+        }
+
     }
 }

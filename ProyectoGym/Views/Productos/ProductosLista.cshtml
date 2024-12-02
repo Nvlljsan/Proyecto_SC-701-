@@ -1,0 +1,56 @@
+﻿@model List<ProyectoGym.Models.Productos>
+
+@{
+    ViewData["Title"] = "Lista de Productos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<div>
+    <a href="@Url.Action("ProductoC", "Productos")" class="btn btn-success">Nuevo Producto</a>
+</div>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th># de producto</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Configuraciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productos in Model)
+            {
+                <tr>
+                    <td>@productos.ProductoID</td>
+                    <td>@productos.NombreProducto</td>
+                    <td>@productos.Descripcion</td>
+                    <td>@productos.Precio</td>
+                    <td>@productos.Stock</td>
+                    <td>
+                        <div class="d-flex">
+                            <a href="@Url.Action("ProductoU", "Productos", new { ProductoID = productos.ProductoID })" class="btn btn-primary">Editar</a>
+                            <form method="post" action="@Url.Action("ProductoD", "Productos")">
+                                <input type="hidden" name="UsuarioID" value="@productos.ProductoID" />
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No se encontraron productos.</p>
+}

@@ -7,6 +7,10 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
 using static System.Net.WebRequestMethods;
+using ProyectoGym.Models.ViewModels;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProyectoGym.Controllers
 {
@@ -60,7 +64,6 @@ namespace ProyectoGym.Controllers
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
 
-                    // Autenticar al usuario
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                     return RedirectToAction("Inicio", "Home");
@@ -73,12 +76,75 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
-
-        public IActionResult RecuperarClave()
+        [HttpGet]
+        public IActionResult RecuperarAcceso()
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult RecuperarAcceso(RecuperarContrasenaVM model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Login/RecuperarAcceso";
+
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    return RedirectToAction("RestablecerContrasena", "Login");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
+            }
+        }
+
+        [HttpGet]
+        public IActionResult RestablecerContrasena(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                ViewBag.Error = "El token es inválido o ha expirado.";
+                return RedirectToAction("RecuperarAcceso");
+            }
+
+            TempData["Token"] = token;
+            var model = new RestablecerContrasenaVM { Token = token };
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult RestablecerContrasena(RestablecerContrasenaVM model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Login/RestablecerContrasena";
+
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    ViewBag.Mensaje = "Revisa tu correo para obtener el enlace de recuperación.";
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
+            }
+        }
+
 
         [HttpGet]
         public IActionResult Registro()

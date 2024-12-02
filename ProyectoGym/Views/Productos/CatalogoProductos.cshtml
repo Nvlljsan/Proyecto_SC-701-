@@ -1,0 +1,32 @@
+﻿@model List<ProyectoGym.Models.Productos>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Catálogo de Productos</h2>
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var producto in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="~/images/default-product.png" class="card-img-top" alt="Imagen del producto">
+                        <div class="card-body">
+                            <h5 class="card-title">@producto.NombreProducto</h5>
+                            <p class="card-text text-muted">@producto.Descripcion</p>
+                            <p class="card-text"><strong>Precio:</strong> $@producto.Precio</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="#" class="btn btn-primary">Agregar al carrito</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            No hay productos disponibles.
+        </div>
+    }
+</div>
