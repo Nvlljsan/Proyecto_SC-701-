@@ -113,6 +113,15 @@ CREATE TABLE Reservas (
     FOREIGN KEY (MaquinaID) REFERENCES Maquinas(MaquinaID)
 );
 
+----------------------------- Reservas -----------------------------
+CREATE TABLE RecuperarTokens (
+    TokenID INT IDENTITY(1,1) PRIMARY KEY, 
+    UsuarioID INT NOT NULL,                
+    Token NVARCHAR(255) NOT NULL,         
+    FechaExpiracion DATETIME NOT NULL,    
+    FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID)
+);
+
 ----------------------------- ALTERS -----------------------------
 ALTER TABLE Reservas
 ADD CONSTRAINT DF_Reservas_Estado DEFAULT 1 FOR Estado;
@@ -480,27 +489,68 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [dbo].[InicioSesion] ---- SIN PROBAR ----
+CREATE PROCEDURE [dbo].[InicioSesion] ---- FUNCIONAL ----
 	@Email NVARCHAR(100),
-    @Contrasena NVARCHAR(100)
+    	@Contrasena NVARCHAR(100)
 AS
 BEGIN
-	SELECT UsuarioID, Nombre, Apellido, RolID
+    SELECT UsuarioID, Nombre, Apellido, RolID
     FROM Usuarios
     WHERE Email = @Email AND Contrasena = @Contrasena;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[RecuperarContrasena] ---- SIN PROBAR ----
-	@Email NVARCHAR(100)
+CREATE PROCEDURE [dbo].[RegistrarRecuperar] ---- FUNCIONAL ----
+    @Email NVARCHAR(100),           
+    @Token NVARCHAR(255),           
+    @FechaExpiracion DATETIME       
 AS
 BEGIN
-	SELECT Contrasena
-    FROM Usuarios
-    WHERE Email = @Email;
-END:
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM Usuarios WHERE Email = @Email)
+    BEGIN
+        DECLARE @UsuarioID INT;
+        SELECT @UsuarioID = UsuarioID FROM Usuarios WHERE Email = @Email;
+
+        INSERT INTO RecuperarTokens (UsuarioID, Token, FechaExpiracion)
+        VALUES (@UsuarioID, @Token, @FechaExpiracion);
+
+        RETURN 0; 
+    END
+    ELSE
+    BEGIN
+        RETURN -1; 
+    END
+END;
 GO
 
+ALTER PROCEDURE [dbo].[RegistrarRestablecer] ---- FUNCIONAL ----
+    @Token NVARCHAR(255),          
+    @NuevaContrasena NVARCHAR(100) 
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @UsuarioID INT;
+    SELECT @UsuarioID = UsuarioID FROM RecuperarTokens WHERE Token = @Token AND FechaExpiracion > GETDATE();
+
+    IF @UsuarioID IS NOT NULL
+    BEGIN
+        UPDATE Usuarios
+        SET Contrasena = @NuevaContrasena
+        WHERE UsuarioID = @UsuarioID;
+
+        DELETE FROM RecuperarTokens WHERE Token = @Token;
+
+        RETURN 0; 
+    END
+    ELSE
+    BEGIN
+        RETURN -1; 
+    END
+END;
+GO
 
 -----------------------------  Reservas-----------------------------
 CREATE PROCEDURE sp_ObtenerReservas
