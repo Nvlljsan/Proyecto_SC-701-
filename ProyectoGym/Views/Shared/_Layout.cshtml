@@ -101,7 +101,21 @@
                                             <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a> 
                                         </nav>
                                     </div>
-                                    
+
+                                    <!-- Sección Productos -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseProductos" aria-expanded="false" aria-controls="collapseProductos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Productos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseProductos" aria-labelledby="headingProductos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("ProductosLista","Productos")">Productos Registrados</a>
+                                            <a class="nav-link" href="@Url.Action("CatalogoProductos","Productos")">Catalogo de Productos</a>
+                                        </nav>
+                                    </div>
+
                                     <!-- Sección Maquinas -->
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
                                         <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
@@ -283,6 +297,21 @@
                                     <!-- Sección Usuarios -->
                                     <!-- LOS CLIENTES NO PUEDEN VER LOS USUARIOS -->
 
+                                    <!-- Sección Productos -->
+                                    <!-- LOS CLIENTES SOLO PUEDEN VER EL CATALOGO DE PRODUCTOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseProductos" aria-expanded="false" aria-controls="collapseProductos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Productos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseProductos" aria-labelledby="headingProductos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("CatalogoProductos","Productos")">Catalogo de Productos</a>
+                                        </nav>
+                                    </div>
+
+
                                     <!-- Sección Maquinas -->
                                     <!-- LOS CLIENTES PODRIAN VER LAS MAQUINAS PERO COMO CATALOGO EN LUGAR DE VER UNA LISTA DE ESTAS -->
 
@@ -351,6 +380,20 @@
                                     <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                             <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Productos -->
+                                    <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LOS PRODUCTOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseProductos" aria-expanded="false" aria-controls="collapseProductos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Productos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseProductos" aria-labelledby="headingProductos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("ProductosLista","Productos")">Productos Registrados</a>
                                         </nav>
                                     </div>
 

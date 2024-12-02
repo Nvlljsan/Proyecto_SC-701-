@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoGym.Models;
 using ProyectoGym.Services;
 using System.Net.Http.Headers;
@@ -7,13 +6,13 @@ using System.Text.Json;
 
 namespace ProyectoGym.Controllers
 {
-    public class UsuariosController : Controller
+    public class ProductosController : Controller
     {
         private readonly IHttpClientFactory _http;
         private readonly IConfiguration _conf;
         private readonly IMetodosComunes _comunes;
 
-        public UsuariosController(IHttpClientFactory http, IConfiguration conf, IMetodosComunes comunes)
+        public ProductosController(IHttpClientFactory http, IConfiguration conf, IMetodosComunes comunes)
         {
             _http = http;
             _conf = conf;
@@ -21,46 +20,38 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult UsuariosLista()
+        public IActionResult ProductosLista()
         {
             using (var client = _http.CreateClient())
             {
-                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuariosLista";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductosLista";
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
 
                 if (result != null && result.Codigo == 0)
                 {
-                    var datosContenido = JsonSerializer.Deserialize<List<Usuarios>>((JsonElement)result.Contenido!);
+                    var datosContenido = JsonSerializer.Deserialize<List<Productos>>((JsonElement)result.Contenido!);
                     return View(datosContenido);
                 }
 
-                return View(new List<Usuarios>());
+                return View(new List<Productos>());
             }
         }
 
-
-
         [HttpGet]
-        public IActionResult UsuarioC()
+        public IActionResult ProductoC()
         {
-            var roles = RolesLista();
-            if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
-            {
-                ViewBag.Roles = rolesLista;
-            }
             return View();
         }
 
         [HttpPost]
-        public IActionResult UsuarioC(Usuarios model)
+        public IActionResult ProductoC(Productos model)
         {
             using (var client = _http.CreateClient())
             {
-                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioC";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductoC";
 
-                model.Contrasena = _comunes.Encrypt(model.Contrasena);
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PostAsync(url, datos).Result;
@@ -68,7 +59,7 @@ namespace ProyectoGym.Controllers
 
                 if (result != null && result.Codigo == 0)
                 {
-                    return RedirectToAction("UsuariosLista", "Usuarios");
+                    return RedirectToAction("ProductosLista", "Productos");
                 }
                 else
                 {
@@ -79,42 +70,34 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult UsuarioU(int UsuarioID)
+        public IActionResult ProductoU(int ProductoID)
         {
             using (var client = _http.CreateClient())
             {
-                var url = _conf.GetSection("Variables:UrlApi").Value + $"Usuarios/UsuarioR?usuarioID={UsuarioID}";
+                var url = _conf.GetSection("Variables:UrlApi").Value + $"Productos/ProductoR?productoID={ProductoID}";
 
                 var response = client.GetAsync(url).Result;
-                var result = response.Content.ReadFromJsonAsync<Usuarios>().Result;
+                var result = response.Content.ReadFromJsonAsync<Productos>().Result;
 
                 if (result != null)
                 {
-                    var roles = RolesLista();
-                    if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
-                    {
-                        ViewBag.Roles = rolesLista;
-                    }
-
-                    return View(result); 
+                    return View(result);
                 }
                 else
                 {
-                    ViewBag.Mensaje = "No se encontraron datos del usuario.";
-                    return RedirectToAction("UsuariosLista");
+                    ViewBag.Mensaje = "No se encontraron datos del producto.";
+                    return RedirectToAction("ProductosLista");
                 }
             }
         }
 
-
         [HttpPost]
-        public IActionResult UsuarioU(Usuarios model)
+        public IActionResult ProductoU(Productos model)
         {
             using (var client = _http.CreateClient())
             {
-                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioU";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductoU";
 
-                model.Contrasena = _comunes.Encrypt(model.Contrasena);
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PutAsync(url, datos).Result;
@@ -122,16 +105,10 @@ namespace ProyectoGym.Controllers
 
                 if (result != null && result.Codigo == 0)
                 {
-                    return RedirectToAction("UsuariosLista");
+                    return RedirectToAction("ProductosLista");
                 }
                 else
                 {
-                    var roles = RolesLista();
-                    if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
-                    {
-                        ViewBag.Roles = rolesLista;
-                    }
-
                     ViewBag.Mensaje = result!.Mensaje;
                     return View(model);
                 }
@@ -139,47 +116,44 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult UsuarioD(int usuarioID)
+        public IActionResult ProductoD(int productoID)
         {
             using (var client = _http.CreateClient())
             {
-                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioD?usuarioID=" + usuarioID;
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductoD?productoID=" + productoID;
 
                 var response = client.DeleteAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
 
                 if (result != null && result.Codigo == 0)
                 {
-                    return RedirectToAction("UsuariosLista");
+                    return RedirectToAction("ProductosLista");
                 }
                 else
                 {
                     ViewBag.Mensaje = result?.Mensaje ?? "Error desconocido";
-                    return RedirectToAction("UsuariosLista");
+                    return RedirectToAction("ProductosLista");
                 }
             }
         }
 
-       
-
-
-
-        //=================================================[Metodos Auxiliares]=================================================
-        private IActionResult RolesLista()
+        [HttpGet]
+        public IActionResult CatalogoProductos()
         {
             using (var client = _http.CreateClient())
             {
-                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductosLista";
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
 
                 if (result != null && result.Codigo == 0)
                 {
-                    var datosContenido = JsonSerializer.Deserialize<List<Roles>>((JsonElement)result.Contenido!);
-                    return Json(datosContenido);
+                    var datosContenido = JsonSerializer.Deserialize<List<Productos>>((JsonElement)result.Contenido!);
+                    return View(datosContenido);
                 }
-                return Json(new List<Roles>()); 
+
+                return View(new List<Productos>());
             }
         }
     }
