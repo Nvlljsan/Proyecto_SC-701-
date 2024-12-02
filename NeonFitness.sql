@@ -126,6 +126,23 @@ CREATE TABLE RecuperarTokens (
 ALTER TABLE Reservas
 ADD CONSTRAINT DF_Reservas_Estado DEFAULT 1 FOR Estado;
 
+ALTER TABLE Clientes
+ALTER COLUMN FechaInicioMembresia DATE NULL;
+
+ALTER TABLE Clientes
+ALTER COLUMN FechaFinMembresia DATE NULL;
+
+ALTER TABLE Empleados
+ALTER COLUMN Puesto NVARCHAR(50) NULL;
+
+ALTER TABLE Empleados
+ALTER COLUMN FechaContratacion DATE NULL;
+
+ALTER TABLE Instructores
+ALTER COLUMN Especialidad NVARCHAR(100) NULL;
+
+ALTER TABLE Instructores
+ALTER COLUMN ExperienciaAnios INT NULL;
 
 
 ----------------------------- INSERTS -----------------------------
@@ -399,19 +416,38 @@ END;
 GO
 
 ----------------------------- Usuarios ----------------------------
-CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ----
-	@Nombre NVARCHAR(50),
-	@Apellido NVARCHAR(50),
-	@Email NVARCHAR(100),
-    	@Contrasena NVARCHAR(100),
-    	@Telefono NVARCHAR(20),
-    	@Direccion NVARCHAR(255),
-    	@FechaRegistro DATE,
-    	@RolID INT
+CREATE PROCEDURE [dbo].[UsuarioC]
+    @Nombre NVARCHAR(50),
+    @Apellido NVARCHAR(50),
+    @Email NVARCHAR(100),
+    @Contrasena NVARCHAR(100),
+    @Telefono NVARCHAR(20),
+    @Direccion NVARCHAR(255),
+    @RolID INT
 AS
 BEGIN
-	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
+    SET NOCOUNT ON;
+
+    INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
     VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
+
+	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
+
+        IF @RolID = 3 -- Cliente
+        BEGIN
+            INSERT INTO [dbo].[Clientes] (UsuarioID, MembresiaActiva, FechaInicioMembresia, FechaFinMembresia)
+			VALUES (@UsuarioId, 0, GETDATE(), NULL);
+        END
+        ELSE IF @RolID = 2 -- Instructor
+        BEGIN
+            INSERT INTO [dbo].[Instructores](UsuarioID, Especialidad, ExperienciaAnios)
+            VALUES (@UsuarioId, NULL, NULL); 
+        END
+        ELSE IF @RolID = 4 -- Empleado
+        BEGIN
+            INSERT INTO [dbo].[Empleados] (UsuarioID, Puesto, FechaContratacion)
+            VALUES (@UsuarioId, NULL, GETDATE());
+        END
 END;
 GO
 	
@@ -452,8 +488,10 @@ CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE ----
     @UsuarioID INT
 AS
 BEGIN
-    DELETE FROM Usuarios
-    WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Clientes WHERE UsuarioID = @UsuarioID;
+    DELETE FROM Instructores WHERE UsuarioID = @UsuarioID;
+    DELETE FROM Empleados WHERE UsuarioID = @UsuarioID;
+    DELETE FROM Usuarios WHERE UsuarioID = @UsuarioID;
 END;
 GO
 
@@ -486,6 +524,14 @@ AS
 BEGIN
 	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
     VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
+
+	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
+
+    IF @RolID = 3
+    BEGIN
+        INSERT INTO [dbo].[Clientes] (UsuarioID, MembresiaActiva, FechaInicioMembresia, FechaFinMembresia)
+        VALUES (@UsuarioId, 0, GETDATE(), NULL);
+    END
 END;
 GO
 
