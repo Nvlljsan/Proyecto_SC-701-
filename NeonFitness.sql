@@ -122,6 +122,18 @@ CREATE TABLE RecuperarTokens (
     FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID)
 );
 
+----------------------------- Carrito -----------------------------
+CREATE TABLE Carrito (
+    CarritoID INT IDENTITY(1,1) PRIMARY KEY,
+    UsuarioID INT NOT NULL, 
+    ProductoID INT NOT NULL, 
+    Cantidad INT NOT NULL, 
+    FechaAgregado DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID)
+);
+
+
 ----------------------------- ALTERS -----------------------------
 ALTER TABLE Reservas
 ADD CONSTRAINT DF_Reservas_Estado DEFAULT 1 FOR Estado;
@@ -721,6 +733,70 @@ BEGIN
         Stock > 0; -- Filtra solo los productos que tienen stock disponible
 END;
 GO
+-----------------------------Ventas-----------------------------
+CREATE PROCEDURE [dbo].[CarritoAgregar]
+    @UsuarioID INT,
+    @ProductoID INT,
+    @Cantidad INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Validar si el UsuarioID existe
+    IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE UsuarioID = @UsuarioID)
+    BEGIN
+        RAISERROR ('El UsuarioID proporcionado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Verificar si el producto ya está en el carrito
+    IF EXISTS (SELECT 1 FROM Carrito WHERE UsuarioID = @UsuarioID AND ProductoID = @ProductoID)
+    BEGIN
+        UPDATE Carrito
+        SET Cantidad = Cantidad + @Cantidad
+        WHERE UsuarioID = @UsuarioID AND ProductoID = @ProductoID;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO Carrito (UsuarioID, ProductoID, Cantidad)
+        VALUES (@UsuarioID, @ProductoID, @Cantidad);
+    END
+END;
+GO
+
+CREATE PROCEDURE [dbo].[CarritoEliminar]
+    @CarritoID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM Carrito WHERE CarritoID = @CarritoID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[CarritoObtener]
+    @UsuarioID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        c.CarritoID,
+        c.ProductoID,
+        p.NombreProducto,
+        p.Precio,
+        c.Cantidad,
+        (p.Precio * c.Cantidad) AS Subtotal
+    FROM 
+        Carrito c
+    INNER JOIN 
+        Productos p ON c.ProductoID = p.ProductoID
+    WHERE 
+        c.UsuarioID = @UsuarioID;
+END;
+GO
+
+
 
 ------------------------------[UPDATES]------------------------------
 ----------------------------- Usuarios -----------------------------
