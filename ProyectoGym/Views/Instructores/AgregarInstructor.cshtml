@@ -1,0 +1,24 @@
+﻿@model ProyectoGym.Models.Instructores
+
+<h2>Agregar Instructor</h2>
+<form asp-action="AgregarInstructor" method="post">
+    <div class="mb-3">
+        <label for="UsuarioID">Usuario</label>
+        <select asp-for="UsuarioID" class="form-control">
+            <option value="">Seleccione un usuario</option>
+            @foreach (var usuario in ViewBag.Usuarios)
+            {
+                <option value="@usuario.UsuarioID">@usuario.Nombre @usuario.Apellido</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="Especialidad">Especialidad</label>
+        <input asp-for="Especialidad" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="ExperienciaAnios">Años de Experiencia</label>
+        <input asp-for="ExperienciaAnios" class="form-control" type="number" />
+    </div>
+    <button type="submit" class="btn btn-success">Guardar</button>
+</form>

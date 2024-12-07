@@ -1,0 +1,29 @@
+﻿@model ProyectoGym.Models.Empleados
+
+<h2>Agregar Empleado</h2>
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-danger text-center">@ViewBag.Mensaje</div>
+}
+
+<form asp-action="AgregarEmpleado" method="post">
+    <div class="mb-3">
+        <label for="UsuarioID">Usuario</label>
+        <select asp-for="UsuarioID" class="form-control" required>
+            <option value="">Seleccione un usuario</option>
+            @foreach (var usuario in ViewBag.Usuarios)
+            {
+                <option value="@usuario.UsuarioID">@usuario.Nombre @usuario.Apellido</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="Puesto">Puesto</label>
+        <input asp-for="Puesto" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label for="FechaContratacion">Fecha de Contratación</label>
+        <input asp-for="FechaContratacion" class="form-control" type="date" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>

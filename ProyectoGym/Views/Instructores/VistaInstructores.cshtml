@@ -1,0 +1,33 @@
+﻿@model List<ProyectoGym.Models.Instructores>
+
+<h2>Gestión de Instructores</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Especialidad</th>
+            <th>Años de Experiencia</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var instructor in Model)
+        {
+            <tr>
+                <td>@instructor.Nombre</td>
+                <td>@instructor.Apellido</td>
+                <td>@instructor.Email</td>
+                <td>@instructor.Telefono</td>
+                <td>@instructor.Especialidad</td>
+                <td>@instructor.ExperienciaAnios</td>
+                <td>
+                    <a asp-action="ModificarInstructor" asp-route-id="@instructor.InstructorID" class="btn btn-warning">Modificar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="AgregarInstructor" class="btn btn-primary">Agregar Instructor</a>
