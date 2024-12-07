@@ -8,5 +8,6 @@
         public decimal Precio { get; set; }
         public int Stock { get; set; }
         public ICollection<Ventas> Ventas { get; set; } = new List<Ventas>();
+        public virtual ICollection<Carrito> Carrito { get; set; } = new List<Carrito>();
     }
 }

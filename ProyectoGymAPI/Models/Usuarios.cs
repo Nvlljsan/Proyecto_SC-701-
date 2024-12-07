@@ -13,5 +13,6 @@
         public int? RolID { get; set; }
         public virtual ICollection<Ventas> Ventas { get; set; } = new List<Ventas>();
         public virtual ICollection<Reservas> Reservas { get; set; } = new List<Reservas>();
+        public virtual ICollection<Carrito> Carrito { get; set; } = new List<Carrito>();
     }
 }
