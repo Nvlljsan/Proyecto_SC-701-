@@ -14,4 +14,8 @@
     <None Include="Views\Login\InicioSesion.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\ViewModels\" />
+  </ItemGroup>
+
 </Project>

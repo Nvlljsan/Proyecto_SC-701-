@@ -6,6 +6,7 @@ using ProyectoGymAPI.Models;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace ProyectoGymAPI.Controllers
 {
@@ -24,7 +25,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("UsuariosLista")]
-        public IActionResult UsuariosLista()
+        public IActionResult UsuariosLista() //FUNCIONA 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -48,8 +49,10 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPost]
         [Route("UsuarioC")]
-        public IActionResult UsuarioC(Usuarios model)
+        public IActionResult UsuarioC(Usuarios model) //REVISAR
         {
+            Console.WriteLine($"Datos recibidos en el API: {JsonSerializer.Serialize(model)}");
+
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
@@ -69,7 +72,7 @@ namespace ProyectoGymAPI.Controllers
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Error al registrar un usuario.";
+                    respuesta.Mensaje = "Error en el API.";
                 }
 
                 return Ok(respuesta);
@@ -78,7 +81,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("UsuarioR")]
-        public IActionResult UsuarioR(int usuarioID)
+        public IActionResult UsuarioR(int usuarioID) //PROBAR
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -97,13 +100,13 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPut]
         [Route("UsuarioU")]
-        public IActionResult UsuarioU(Usuarios model)
+        public IActionResult UsuarioU(Usuarios model) //FUNCIONA 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
 
-                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
+                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Telefono, model.Direccion, model.RolID });
 
                 if (result > 0)
                 {
@@ -121,7 +124,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpDelete]
         [Route("UsuarioD")]
-        public IActionResult UsuarioD(int usuarioID)
+        public IActionResult UsuarioD(int usuarioID) //FUNCIONA 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -142,10 +145,13 @@ namespace ProyectoGymAPI.Controllers
             }
         }
 
+        //PENDIENTE UN DESACTIVAR USUARIO
+
+
         //======================================================[Metodos Auxiliares]=====================================================================
         [HttpGet]
         [Route("RolesLista")]
-        public IActionResult RolesLista()
+        public IActionResult RolesLista() //FUNCIONAL, LLAMAR LA LISTA
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
