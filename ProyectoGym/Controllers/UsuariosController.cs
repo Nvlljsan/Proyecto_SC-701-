@@ -52,15 +52,11 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult UsuarioC(Usuarios model) //REVISAR
+        public IActionResult UsuarioC(Usuarios model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioC";
-
-                model.Contrasena = _comunes.Encrypt(model.Contrasena);
-
-                Console.WriteLine($"Modelo enviado: {JsonSerializer.Serialize(model)}");
 
                 JsonContent datos = JsonContent.Create(model);
 
@@ -169,7 +165,7 @@ namespace ProyectoGym.Controllers
         {
             using (var client = _http.CreateClient())
             {
-                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;

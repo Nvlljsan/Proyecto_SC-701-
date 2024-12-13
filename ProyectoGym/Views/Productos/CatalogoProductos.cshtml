@@ -17,9 +17,19 @@
                         </div>
                         <div class="card-footer text-center">
                             <!-- Formulario para agregar al carrito -->
-                            <form asp-action="Agregar" asp-controller="Carrito" method="post">
+                            <form asp-action="AgregarAlCarrito" asp-controller="Carrito" method="post">
                                 <input type="hidden" name="productoID" value="@producto.ProductoID" />
-                                <input type="hidden" name="cantidad" value="1" />
+                                <div class="form-group mb-3">
+                                    <label for="cantidad-@producto.ProductoID">Cantidad</label>
+                                    <input type="number"
+                                           id="cantidad-@producto.ProductoID"
+                                           name="cantidad"
+                                           value="1"
+                                           min="1"
+                                           class="form-control text-center"
+                                           style="width: 100px; margin: 0 auto;"
+                                           required />
+                                </div>
                                 <button type="submit" class="btn btn-primary">Agregar al carrito</button>
                             </form>
                         </div>

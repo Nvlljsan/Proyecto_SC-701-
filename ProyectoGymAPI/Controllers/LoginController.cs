@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using ProyectoGymAPI.Models;
-using ProyectoGymAPI.Models.Requests;
 using System.Data;
 using System.Net.Mail;
 using System.Net;

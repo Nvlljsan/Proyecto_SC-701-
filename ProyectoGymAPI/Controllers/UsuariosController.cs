@@ -46,22 +46,20 @@ namespace ProyectoGymAPI.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("UsuarioC")]
-        public IActionResult UsuarioC(Usuarios model) //REVISAR
+        public IActionResult UsuarioC(Usuarios model) //FUNCIONAL 100%
         {
-            Console.WriteLine($"Datos recibidos en el API: {JsonSerializer.Serialize(model)}");
+            if (model.RolID == 0 || model.RolID == null)
+            {
+                model.RolID = 3;
+            }
+
+            model.Contrasena = Encrypt(model.Contrasena);
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-
-                if (model.RolID == 0) //Esto es para hacer que cliente sea default
-                {
-                    model.RolID = 3;  // Cliente
-                }
-
                 var result = context.Execute("UsuarioC", new { model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
 
                 if (result > 0)
@@ -72,7 +70,7 @@ namespace ProyectoGymAPI.Controllers
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Error en el API.";
+                    respuesta.Mensaje = "Error al registrar un usuario.";
                 }
 
                 return Ok(respuesta);
@@ -147,7 +145,6 @@ namespace ProyectoGymAPI.Controllers
 
         //PENDIENTE UN DESACTIVAR USUARIO
 
-
         //======================================================[Metodos Auxiliares]=====================================================================
         [HttpGet]
         [Route("RolesLista")]
@@ -171,6 +168,35 @@ namespace ProyectoGymAPI.Controllers
 
                 return Ok(respuesta);
             }
+        }
+
+        private string Encrypt(string texto) //FUNCIONAL 100%
+        {
+            byte[] iv = new byte[16];
+            byte[] array;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(_conf.GetSection("Variables:Llave").Value!);
+                aes.IV = iv;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                        {
+                            streamWriter.Write(texto);
+                        }
+
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            return Convert.ToBase64String(array);
         }
     }
 }

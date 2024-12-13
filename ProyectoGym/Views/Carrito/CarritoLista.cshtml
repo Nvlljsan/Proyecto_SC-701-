@@ -1,4 +1,4 @@
-﻿@model List<ProyectoGym.Models.Carrito>
+﻿@model List<ProyectoGym.Models.ViewModels.CarritoViewModel>
 
 <div class="container mt-4">
     <h2 class="text-center mb-4">Mi Carrito</h2>
@@ -27,13 +27,6 @@
                         <td>@item.Cantidad</td>
                         <td>$@item.Precio</td>
                         <td>$@item.Subtotal</td>
-                        <td>
-                            <form asp-action="Eliminar" asp-controller="Carrito" method="post">
-                                <input type="hidden" name="carritoID" value="@item.CarritoID" />
-                                <input type="hidden" name="usuarioID" value="@ViewBag.UsuarioID" />
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
-                        </td>
                     </tr>
                 }
             </tbody>

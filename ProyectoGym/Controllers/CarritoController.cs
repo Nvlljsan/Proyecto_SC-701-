@@ -17,7 +17,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult CarritoLista()
         {
             var usuarioIDClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -48,17 +48,17 @@ namespace ProyectoGym.Controllers
 
 
         [HttpPost]
-        public IActionResult Agregar(int productoID, int cantidad)
+        public IActionResult AgregarAlCarrito(int productoID, int cantidad)
         {
             var usuarioIDClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             int usuarioID = int.Parse(usuarioIDClaim);
 
-            var monto = new { usuarioID, productoID, cantidad };
-
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Carrito/AgregarAlCarrito";
+
+                var monto = new { usuarioID, productoID, cantidad };
 
                 JsonContent datos = JsonContent.Create(monto);
                 var response = client.PostAsync(url, datos).Result;
@@ -67,11 +67,11 @@ namespace ProyectoGym.Controllers
 
                 if (result != null && result.Codigo == 0)
                 {
-                    return RedirectToAction("Index", "Carrito");
+                    return RedirectToAction("CarritoLista", "Carrito");
                 }
 
                 TempData["Error"] = result?.Mensaje ?? "Error desconocido al agregar el producto.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Inicio", "Home");
             }
         }
 

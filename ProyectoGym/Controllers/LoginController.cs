@@ -134,7 +134,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult CambiarContrasena(string token)
+        public IActionResult CambiarContrasena(string token) //FUNCIONAL 100%
         {
             if (string.IsNullOrEmpty(token))
             {
@@ -148,7 +148,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult CambiarContrasena(Tokens model)
+        public IActionResult CambiarContrasena(Tokens model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {

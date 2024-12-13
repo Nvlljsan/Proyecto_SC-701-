@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using ProyectoGymAPI.Models;
-using ProyectoGymAPI.Models.Requests;
 using System.Data;
 
 namespace ProyectoGymAPI.Controllers
@@ -20,7 +19,7 @@ namespace ProyectoGymAPI.Controllers
         }
 
         [HttpGet]
-        [Route("ObtenerCarrito/{usuarioID}")]
+        [Route("ObtenerCarrito")]
         public IActionResult ObtenerCarrito(int usuarioID)
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
@@ -46,7 +45,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPost]
         [Route("AgregarAlCarrito")]
-        public IActionResult AgregarAlCarrito(CarritoRequest model)
+        public IActionResult AgregarAlCarrito(Carrito model) //FUNCIONAL 90%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -67,6 +66,7 @@ namespace ProyectoGymAPI.Controllers
                 return Ok(respuesta);
             }
         }
+
 
 
         [HttpDelete]
