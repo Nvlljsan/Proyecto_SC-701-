@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using ProyectoGymAPI.Models;
-using ProyectoGymAPI.Models.Requests;
 using System.Data;
 using System.Net.Mail;
 using System.Net;
@@ -26,22 +25,21 @@ namespace ProyectoGymAPI.Controllers
             _env = env;
         }
 
-        //Aun tengo que configurar bien el inicio de sesion
         [HttpPost]
         [Route("InicioSesion")]
-        public IActionResult InicioSesion(Usuarios model)
+        public IActionResult InicioSesion(Usuarios model) //FUNCIONAL 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-                var contrasenaCifrada = Encrypt(model.Contrasena);
+                var contrasenaCifrada = Encrypt(model.Contrasena); //Se encripta la contraseña que recibe
 
                 var usuario = context.QueryFirstOrDefault<Usuarios>("InicioSesion", new {model.Email, Contrasena = contrasenaCifrada});
 
                 if (usuario != null)
                 {
                     respuesta.Codigo = 0;
-                    respuesta.Contenido = usuario; // Usuario válido
+                    respuesta.Contenido = usuario; 
                 }
                 else
                 {
@@ -54,88 +52,15 @@ namespace ProyectoGymAPI.Controllers
         }
 
         [HttpPost]
-        [Route("RecuperarAcceso")]
-        public IActionResult RecuperarAcceso(Usuarios model)
-        {
-            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
-            {
-                var respuesta = new Respuesta();
-
-                var usuario = context.QueryFirstOrDefault<Usuarios>("SELECT * FROM Usuarios WHERE Email = @Email",
-                    new { model.Email });
-
-                if (usuario != null)
-                {
-                    string token = GenerarCodigo();
-                    DateTime vigencia = DateTime.Now.AddMinutes(30);
-
-                    context.Execute("INSERT INTO RecuperarTokens (UsuarioID, Token, FechaExpiracion) VALUES (@UsuarioID, @Token, @FechaExpiracion)",
-                        new { usuarioID = usuario.UsuarioID, Token = Encrypt(token), FechaExpiracion = vigencia });
-
-                    var ruta = Path.Combine(_env.ContentRootPath, "Template", "RecuperarAcceso.html");
-                    var html = System.IO.File.ReadAllText(ruta);
-
-                    html = html.Replace("@@Nombre", usuario.Nombre);
-                    html = html.Replace("@@Contrasenna", token);
-                    html = html.Replace("@@Vencimiento", vigencia.ToString("dd/MM/yyyy hh:mm tt"));
-
-                    EnviarCorreo(model.Email, "Recuperar Accesos Sistema", html);
-
-                    respuesta.Codigo = 0;
-                    respuesta.Contenido = new { usuario.Nombre, TokenEnviado = true };
-                }
-                else
-                {
-                    respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Su información no se encontró en nuestro sistema";
-                }
-
-                return Ok(respuesta);
-            }
-        }
-
-        [HttpPost]
-        [Route("RestablecerContrasena")]
-        public IActionResult RestablecerContrasena(RestablecerRequest model)
-        {
-            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
-            {
-                var respuesta = new Respuesta();
-
-                var tokenInfo = context.QueryFirstOrDefault("SELECT * FROM RecuperarTokens WHERE Token = @Token AND FechaExpiracion > GETDATE()",
-                    new { Token = Encrypt(model.Token) });
-
-                if (tokenInfo != null)
-                {
-                    context.Execute("UPDATE Usuarios SET Contrasena = @NuevaContrasenna WHERE UsuarioID = @UsuarioID",
-                        new { usuarioID = tokenInfo.UsuarioID, NuevaContrasenna = Encrypt(model.NuevaContrasena) });
-
-                    context.Execute("DELETE FROM RecuperarTokens WHERE Token = @Token",
-                        new { Token = Encrypt(model.Token) });
-
-                    respuesta.Codigo = 0;
-                    respuesta.Mensaje = "La contraseña se ha actualizado correctamente.";
-                }
-                else
-                {
-                    respuesta.Codigo = -1;
-                    respuesta.Mensaje = "El token no es válido o ha expirado.";
-                }
-
-                return Ok(respuesta);
-            }
-        }
-
-        [HttpPost]
         [Route("Registro")]
-        public IActionResult Registro(Usuarios model)
+        public IActionResult Registro(Usuarios model) //FUNCIONAL 100%
         {
             if (model.RolID == 0 || model.RolID == null)
             {
                 model.RolID = 3;
             }
 
-            model.Contrasena = Encrypt(model.Contrasena);
+            model.Contrasena = Encrypt(model.Contrasena); //Se encripta la contraseña que recibe
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -157,8 +82,98 @@ namespace ProyectoGymAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("RecuperarAcceso")]
+        public IActionResult RecuperarAcceso(Usuarios model) //FUNCIONAL 100%
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+
+                var usuario = context.QueryFirstOrDefault<Usuarios>("UsuariosValidar", new { model.Email }); //Verificar que el Usuario exista
+
+                if (usuario != null)
+                {
+                    var codigo = GenerarCodigo();
+                    DateTime vigencia = DateTime.Now.AddMinutes(30);
+                    var tokenCifrado = Encrypt(codigo);
+
+                    context.Execute("TokenC", new { usuario.UsuarioID, Token = tokenCifrado, FechaExpiracion = vigencia }); //Crear un Token
+
+                    var ruta = Path.Combine(_env.ContentRootPath, "Template", "RecuperarAcceso.html"); //Ruta con el mensaje del Correo
+                    var html = System.IO.File.ReadAllText(ruta);
+
+                    html = html.Replace("@@Nombre", usuario.Nombre);
+                    html = html.Replace("@@Contrasenna", codigo);
+                    html = html.Replace("@@Vencimiento", vigencia.ToString("dd/MM/yyyy hh:mm tt"));
+
+                    EnviarCorreo(model.Email, "Recuperar Accesos Sistema", html); //Metodo de enviar correo
+
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = usuario;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "Su información no se encontró en nuestro sistema";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+        [HttpPost]
+        [Route("CambiarContrasena")]
+        public IActionResult CambiarContrasena(Tokens model) //FUNCIONAL 100%
+        {
+            Console.WriteLine($"Token recibido: {model.Token}, Nueva Contraseña: {model.NuevaContrasena}");
+
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var tokenCifrado = Encrypt(model.Token);
+
+                var token = context.QueryFirstOrDefault<Usuarios>( "TokenValidar", new { Token = tokenCifrado });
+
+                if (token != null)
+                {
+                    var contrasenaCifrada = Encrypt(model.NuevaContrasena);
+                    var contrasena = context.Execute("ActualizarContrasena", new { token.UsuarioID, NuevaContrasena = contrasenaCifrada });
+
+                    if (contrasena != null) //Diferente de null para confirmar que esta recibiendo una contraseña
+                    {
+                        var eliminar = context.Execute("TokenD", new { Token = tokenCifrado });
+
+                        if (eliminar > 0)
+                        {
+                            respuesta.Codigo = 0;
+                            respuesta.Mensaje = "La contraseña se ha actualizado correctamente.";
+                        }
+                        else
+                        {
+                            respuesta.Codigo = -1;
+                            respuesta.Mensaje = "Error al eliminar el token.";
+                        }
+                    }
+                    else
+                    {
+                        respuesta.Codigo = -1;
+                        respuesta.Mensaje = "Error al actualizar la contraseña.";
+                    }
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "El token no es válido o ha expirado.";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+
         //======================================================[Metodos Auxiliares]=====================================================================
-        private string Encrypt(string texto)
+        private string Encrypt(string texto) //FUNCIONAL 100%
         {
             byte[] iv = new byte[16];
             byte[] array;
@@ -187,8 +202,7 @@ namespace ProyectoGymAPI.Controllers
             return Convert.ToBase64String(array);
         }
 
-
-        private string Decrypt(string texto)
+        private string Decrypt(string texto) //FUNCIONAL 100%
         {
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(texto);
@@ -211,7 +225,8 @@ namespace ProyectoGymAPI.Controllers
                 }
             }
         }
-        private void EnviarCorreo(string destino, string asunto, string contenido)
+
+        private void EnviarCorreo(string destino, string asunto, string contenido) //FUNCIONAL 100%
         {
             string cuenta = _conf.GetSection("Variables:CorreoEmail").Value!;
             string contrasenna = _conf.GetSection("Variables:ClaveEmail").Value!;
@@ -231,7 +246,7 @@ namespace ProyectoGymAPI.Controllers
             client.Send(message);            
         }
 
-        private string GenerarCodigo()
+        private string GenerarCodigo() //FUNCIONAL 100%
         {
             int length = 8;
             const string valid = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

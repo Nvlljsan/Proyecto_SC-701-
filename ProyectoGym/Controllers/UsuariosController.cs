@@ -21,7 +21,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult UsuariosLista()
+        public IActionResult UsuariosLista() //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -40,10 +40,8 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
-
         [HttpGet]
-        public IActionResult UsuarioC()
+        public IActionResult UsuarioC() //FUNCIONAL 100%
         {
             var roles = RolesLista();
             if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
@@ -54,13 +52,12 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult UsuarioC(Usuarios model)
+        public IActionResult UsuarioC(Usuarios model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioC";
 
-                model.Contrasena = _comunes.Encrypt(model.Contrasena);
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PostAsync(url, datos).Result;
@@ -79,7 +76,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult UsuarioU(int UsuarioID)
+        public IActionResult UsuarioU(int UsuarioID) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -106,9 +103,8 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
         [HttpPost]
-        public IActionResult UsuarioU(Usuarios model)
+        public IActionResult UsuarioU(Usuarios model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -139,7 +135,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult UsuarioD(int usuarioID)
+        public IActionResult UsuarioD(int usuarioID) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -165,11 +161,11 @@ namespace ProyectoGym.Controllers
 
 
         //=================================================[Metodos Auxiliares]=================================================
-        private IActionResult RolesLista()
+        private IActionResult RolesLista() //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
-                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;

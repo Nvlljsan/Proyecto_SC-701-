@@ -21,7 +21,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("ProductosLista")]
-        public IActionResult ProductosLista()
+        public IActionResult ProductosLista() //FUNCIONAL 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -44,13 +44,12 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPost]
         [Route("ProductoC")]
-        public IActionResult ProductoC(Productos model)
+        public IActionResult ProductoC(Productos model) //FUNCIONAL 90%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-
-                var result = context.Execute("ProductoC", new { model.NombreProducto, model.Descripcion, model.Precio, model.Stock});
+                var result = context.Execute("ProductoC", new { model.NombreProducto, model.Descripcion, model.Precio, model.Stock, model.Imagen});
 
                 if (result > 0)
                 {
@@ -69,7 +68,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("ProductoR")]
-        public IActionResult ProductoR(int productoID)
+        public IActionResult ProductoR(int productoID) //PROBAR
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -88,13 +87,13 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPut]
         [Route("ProductoU")]
-        public IActionResult ProductoU(Productos model)
+        public IActionResult ProductoU(Productos model) //FUNCIONAL 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
 
-                var result = context.Execute("ProductoU", new { model.ProductoID, model.NombreProducto, model.Descripcion, model.Precio, model.Stock});
+                var result = context.Execute("ProductoU", new { model.ProductoID, model.NombreProducto, model.Descripcion, model.Precio, model.Stock, model.Imagen});
 
                 if (result > 0)
                 {
@@ -112,7 +111,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpDelete]
         [Route("ProductoD")]
-        public IActionResult ProductoD(int productoID)
+        public IActionResult ProductoD(int productoID) //FUNCIONAL 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {

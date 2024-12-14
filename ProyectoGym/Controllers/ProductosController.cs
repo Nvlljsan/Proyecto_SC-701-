@@ -20,7 +20,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductosLista()
+        public IActionResult ProductosLista() //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -40,13 +40,13 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductoC()
+        public IActionResult ProductoC() //FUNCIONAL 100%
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult ProductoC(Productos model)
+        public IActionResult ProductoC(Productos model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -70,7 +70,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductoU(int ProductoID)
+        public IActionResult ProductoU(int ProductoID) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -92,7 +92,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProductoU(Productos model)
+        public IActionResult ProductoU(Productos model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -116,7 +116,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProductoD(int productoID)
+        public IActionResult ProductoD(int productoID) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -138,7 +138,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult CatalogoProductos()
+        public IActionResult CatalogoProductos() //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {

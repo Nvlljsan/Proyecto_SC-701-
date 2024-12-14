@@ -3,6 +3,7 @@
     public class Empleados
     {
         public int EmpleadoID { get; set; }
+<<<<<<< HEAD
         public int UsuarioID { get; set; }
         public string Puesto { get; set; } = string.Empty;
         public DateTime FechaContratacion { get; set; }
@@ -11,5 +12,10 @@
         public string Email { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;
         public string Direccion { get; set; } = string.Empty;
+=======
+        public int? UsuarioID { get; set; }
+        public string? Puesto { get; set; }
+        public DateTime? FechaContratacion { get; set; }
+>>>>>>> Juan
     }
 }
