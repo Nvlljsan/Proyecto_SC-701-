@@ -18,41 +18,19 @@ namespace ProyectoGymAPI.Controllers
             _conf = conf;
         }
 
-        [HttpGet]
-        [Route("ObtenerCarrito")]
-        public IActionResult ObtenerCarrito(int usuarioID)
-        {
-            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
-            {
-                var respuesta = new Respuesta();
-                var result = context.Query<Carrito>("CarritoObtener", new { UsuarioID = usuarioID }).ToList();
-
-                if (result != null)
-                {
-                    respuesta.Codigo = 0;
-                    respuesta.Contenido = result;
-                    return Ok(result);
-                }
-                else
-                {
-                    respuesta.Codigo = -1;
-                    respuesta.Mensaje = "No hay usuarios registrados en el sistema";
-                }
-                return Ok(result);
-            }
-        }
-
-
         [HttpPost]
         [Route("AgregarAlCarrito")]
-        public IActionResult AgregarAlCarrito(Carrito model) //FUNCIONAL 90%
+        public IActionResult AgregarAlCarrito(Carrito model) //FUNCIONA PERO EL API MANDA -1
         {
+            Console.WriteLine($"UsuarioID: {model.UsuarioID}, ProductoID: {model.ProductoID}, Cantidad: {model.Cantidad}");
+
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
                 var result = context.Execute("CarritoAgregar", new { model.UsuarioID, model.ProductoID, model.Cantidad });
+                Console.WriteLine($"Resultado del SP: {result}");
 
-                if (result > 0)
+                if (result > 0) 
                 {
                     respuesta.Codigo = 0;
                     respuesta.Mensaje = "Producto agregado al carrito.";
@@ -69,9 +47,10 @@ namespace ProyectoGymAPI.Controllers
 
 
 
+
         [HttpDelete]
         [Route("EliminarProducto")]
-        public IActionResult EliminarProducto(int carritoID)
+        public IActionResult EliminarProducto(int carritoID) //SP FUNCIONA DESDE DB PERO NO HA SIDO PROBADO POR QUE NO HAY VISTA
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {

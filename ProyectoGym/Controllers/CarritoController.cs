@@ -16,73 +16,37 @@ namespace ProyectoGym.Controllers
             _conf = conf;
         }
 
-        [HttpGet]
-        public IActionResult CarritoLista()
-        {
-            var usuarioIDClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-            int usuarioID = int.Parse(usuarioIDClaim);
-
-            List<Carrito> carrito = new List<Carrito>();
-
-            //=========================[Especificar el Usuario y hacer una nueva lista por sesión]=========================
-
-            using (var client = _http.CreateClient())
-            {
-                var url = _conf.GetSection("Variables:UrlApi").Value + $"Carrito/ObtenerCarrito/{usuarioID}";
-
-                var response = client.GetAsync(url).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    carrito = response.Content.ReadFromJsonAsync<List<Carrito>>().Result;
-                }
-                else
-                {
-                    return View("Inicio", "Home");
-                }
-            }
-
-            return View(carrito);
-        }
-
-
         [HttpPost]
-        public IActionResult AgregarAlCarrito(int productoID, int cantidad)
+        public IActionResult AgregarAlCarrito(int productoID, int cantidad) //FUNCIONA PERO RECIBE EL -1 DEL API
         {
-            var usuarioIDClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-            int usuarioID = int.Parse(usuarioIDClaim);
 
             using (var client = _http.CreateClient())
             {
+
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Carrito/AgregarAlCarrito";
 
-                var monto = new { usuarioID, productoID, cantidad };
+                var model = new Carrito();
+                model.UsuarioID = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                model.ProductoID = productoID;
+                model.Cantidad = cantidad;
+                model.FechaAgregado = DateTime.Now;
 
-                JsonContent datos = JsonContent.Create(monto);
-                var response = client.PostAsync(url, datos).Result;
-
-                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
-
-                if (result != null && result.Codigo == 0)
+                foreach (var claim in User.Claims)
                 {
-                    return RedirectToAction("CarritoLista", "Carrito");
+                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
                 }
 
-                TempData["Error"] = result?.Mensaje ?? "Error desconocido al agregar el producto.";
-                return RedirectToAction("Inicio", "Home");
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                return Json(result!.Codigo);
             }
         }
 
-
-
-
-
-
-        // Eliminar un producto del carrito
         [HttpPost]
-        public IActionResult Eliminar(int carritoID, int usuarioID)
+        public IActionResult Eliminar(int carritoID, int usuarioID) //HAY QUE HACER UNA VIEW
         {
             using (var client = _http.CreateClient())
             {
