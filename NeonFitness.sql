@@ -113,7 +113,7 @@ CREATE TABLE Reservas (
     FOREIGN KEY (MaquinaID) REFERENCES Maquinas(MaquinaID)
 );
 
------------------------------ Reservas -----------------------------
+----------------------------- Tokens -----------------------------
 CREATE TABLE RecuperarTokens (
     TokenID INT IDENTITY(1,1) PRIMARY KEY, 
     UsuarioID INT NOT NULL,                
@@ -156,7 +156,8 @@ ALTER COLUMN Especialidad NVARCHAR(100) NULL;
 ALTER TABLE Instructores
 ALTER COLUMN ExperienciaAnios INT NULL;
 
-
+ALTER TABLE Productos
+ADD Imagen VARCHAR(50) NOT NULL;
 ----------------------------- INSERTS -----------------------------
 
 ----------------------------- Roles -----------------------------
@@ -428,7 +429,8 @@ END;
 GO
 
 ----------------------------- Usuarios ----------------------------
-CREATE PROCEDURE [dbo].[UsuarioC]
+
+CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ----
     @Nombre NVARCHAR(50),
     @Apellido NVARCHAR(50),
     @Email NVARCHAR(100),
@@ -438,30 +440,28 @@ CREATE PROCEDURE [dbo].[UsuarioC]
     @RolID INT
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
     VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
 
 	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
 
-        IF @RolID = 3 -- Cliente
-        BEGIN
-            INSERT INTO [dbo].[Clientes] (UsuarioID, MembresiaActiva, FechaInicioMembresia, FechaFinMembresia)
-			VALUES (@UsuarioId, 0, GETDATE(), NULL);
-        END
-        ELSE IF @RolID = 2 -- Instructor
-        BEGIN
-            INSERT INTO [dbo].[Instructores](UsuarioID, Especialidad, ExperienciaAnios)
-            VALUES (@UsuarioId, NULL, NULL); 
-        END
-        ELSE IF @RolID = 4 -- Empleado
-        BEGIN
-            INSERT INTO [dbo].[Empleados] (UsuarioID, Puesto, FechaContratacion)
-            VALUES (@UsuarioId, NULL, GETDATE());
-        END
+    IF @RolID = 3 -- Cliente
+    BEGIN
+		INSERT INTO [dbo].[Clientes] (UsuarioID, MembresiaActiva, FechaInicioMembresia, FechaFinMembresia)
+		VALUES (@UsuarioId, 0, GETDATE(), NULL);
+    END
+	ELSE IF @RolID = 2 -- Instructor
+    BEGIN
+        INSERT INTO [dbo].[Instructores](UsuarioID, Especialidad, ExperienciaAnios)
+		VALUES (@UsuarioId, NULL, NULL); 
+    END
+    ELSE IF @RolID = 4 -- Empleado
+	BEGIN
+        INSERT INTO [dbo].[Empleados] (UsuarioID, Puesto, FechaContratacion)
+		VALUES (@UsuarioId, NULL, GETDATE());
+    END
 END;
-GO
+
 	
 CREATE PROCEDURE [dbo].[UsuarioR] ---- READ ---- 
     @UsuarioID INT
@@ -478,7 +478,6 @@ CREATE PROCEDURE [dbo].[UsuarioU] ---- UPDATE ----
     @Nombre NVARCHAR(50),
     @Apellido NVARCHAR(50),
     @Email NVARCHAR(100),
-    @Contrasena NVARCHAR(100),
     @Telefono NVARCHAR(20),
     @Direccion NVARCHAR(255),
     @RolID INT
@@ -488,26 +487,40 @@ BEGIN
     SET Nombre = @Nombre,
         Apellido = @Apellido,
         Email = @Email,
-        Contrasena = @Contrasena,
         Telefono = @Telefono,
         Direccion = @Direccion,
         RolID = @RolID
     WHERE UsuarioID = @UsuarioID;
 END;
 GO
-	
-CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE ----
+
+CREATE PROCEDURE [dbo].[UsuarioR] ---- READ ---- 
     @UsuarioID INT
 AS
 BEGIN
-	DELETE FROM Clientes WHERE UsuarioID = @UsuarioID;
-    DELETE FROM Instructores WHERE UsuarioID = @UsuarioID;
-    DELETE FROM Empleados WHERE UsuarioID = @UsuarioID;
-    DELETE FROM Usuarios WHERE UsuarioID = @UsuarioID;
+    SELECT UsuarioID, Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID
+    FROM Usuarios
+    WHERE UsuarioID = @UsuarioID;
 END;
 GO
 
-CREATE PROCEDURE UsuariosLista
+CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE -----
+    @UsuarioID INT
+AS
+BEGIN
+	DELETE FROM RecuperarTokens WHERE UsuarioID = @UsuarioID;
+    DELETE FROM Reservas WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Pagos WHERE UsuarioID = @UsuarioID;
+    DELETE FROM Carrito WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Ventas WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Clientes WHERE UsuarioID = @UsuarioID;
+    DELETE FROM Instructores WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Empleados WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Usuarios WHERE UsuarioID = @UsuarioID;
+END;
+GO
+
+CREATE PROCEDURE UsuariosLista ---- LISTA USUARIOS ----
 AS
 BEGIN
     SELECT UsuarioID, Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro, RolID
@@ -516,7 +529,8 @@ END;
 GO
 
 -------------------------- SP ROLES --------------------------
-CREATE PROCEDURE [dbo].[RolesLista]
+
+CREATE PROCEDURE [dbo].[RolesLista] ---- LISTA ROLES ----
 AS
 BEGIN
     SELECT RolID, NombreRol
@@ -524,7 +538,8 @@ BEGIN
 END;
 GO
 -------------------------- SP LOGEO --------------------------
-CREATE PROCEDURE [dbo].[Registro] ---- FUNCIONAL ----
+
+CREATE PROCEDURE [dbo].[Registro] ---- REGISTRO -----
 	@Nombre NVARCHAR(50),
 	@Apellido NVARCHAR(50),
 	@Email NVARCHAR(100),
@@ -547,21 +562,21 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [dbo].[InicioSesion] ---- FUNCIONAL ----
+CREATE PROCEDURE [dbo].[InicioSesion] ---- INICIO SESION ----
 	@Email NVARCHAR(100),
-    	@Contrasena NVARCHAR(100)
+    @Contrasena NVARCHAR(100)
 AS
 BEGIN
-    SELECT UsuarioID, Nombre, Apellido, RolID
+	SELECT UsuarioID, Nombre, Apellido, RolID
     FROM Usuarios
     WHERE Email = @Email AND Contrasena = @Contrasena;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[RegistrarRecuperar] ---- FUNCIONAL ----
-    @Email NVARCHAR(100),           
-    @Token NVARCHAR(255),           
-    @FechaExpiracion DATETIME       
+CREATE PROCEDURE [dbo].[RegistrarRecuperar] ---- CODIGO RECUPERACION ----
+    @Email NVARCHAR(100), 
+    @Token NVARCHAR(255), 
+    @FechaExpiracion DATETIME  
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -574,18 +589,22 @@ BEGIN
         INSERT INTO RecuperarTokens (UsuarioID, Token, FechaExpiracion)
         VALUES (@UsuarioID, @Token, @FechaExpiracion);
 
-        RETURN 0; 
+        SELECT UsuarioID, Nombre, Apellido, Email
+        FROM Usuarios
+        WHERE UsuarioID = @UsuarioID;
+
+        RETURN 0;
     END
     ELSE
     BEGIN
-        RETURN -1; 
+        RETURN -1;
     END
 END;
 GO
 
-ALTER PROCEDURE [dbo].[RegistrarRestablecer] ---- FUNCIONAL ----
-    @Token NVARCHAR(255),          
-    @NuevaContrasena NVARCHAR(100) 
+CREATE PROCEDURE [dbo].[RegistrarRestablecer] ---- CAMBIAR CONTRASENA ----
+    @Token NVARCHAR(255),     
+    @NuevaContrasena NVARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -601,16 +620,17 @@ BEGIN
 
         DELETE FROM RecuperarTokens WHERE Token = @Token;
 
-        RETURN 0; 
+        RETURN 0;
     END
     ELSE
     BEGIN
-        RETURN -1; 
+        RETURN -1;
     END
 END;
 GO
 
 -----------------------------  Reservas-----------------------------
+
 CREATE PROCEDURE sp_ObtenerReservas
 AS
 BEGIN
@@ -653,6 +673,7 @@ BEGIN
 END;
 GO
 -----------------------------  Pagos-----------------------------
+
 Create PROCEDURE sp_ObtenerPagos
 AS
 BEGIN
@@ -733,38 +754,31 @@ BEGIN
         Stock > 0; -- Filtra solo los productos que tienen stock disponible
 END;
 GO
------------------------------Ventas-----------------------------
-CREATE PROCEDURE [dbo].[CarritoAgregar]
+----------------------------- Carrito -----------------------------
+
+CREATE PROCEDURE [dbo].[CarritoAgregar] ---- AGREGAR AL CARRITO ----
     @UsuarioID INT,
     @ProductoID INT,
     @Cantidad INT
 AS
 BEGIN
-    SET NOCOUNT ON;
-
-    -- Validar si el UsuarioID existe
-    IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE UsuarioID = @UsuarioID)
+    IF (SELECT COUNT(*) FROM Carrito WHERE UsuarioID = @UsuarioID AND ProductoID = @ProductoID) = 0
     BEGIN
-        RAISERROR ('El UsuarioID proporcionado no existe.', 16, 1);
-        RETURN;
-    END
-
-    -- Verificar si el producto ya está en el carrito
-    IF EXISTS (SELECT 1 FROM Carrito WHERE UsuarioID = @UsuarioID AND ProductoID = @ProductoID)
-    BEGIN
-        UPDATE Carrito
-        SET Cantidad = Cantidad + @Cantidad
-        WHERE UsuarioID = @UsuarioID AND ProductoID = @ProductoID;
+        INSERT INTO Carrito (UsuarioID, ProductoID, Cantidad, FechaAgregado)
+        VALUES (@UsuarioID, @ProductoID, @Cantidad, GETDATE());
     END
     ELSE
     BEGIN
-        INSERT INTO Carrito (UsuarioID, ProductoID, Cantidad)
-        VALUES (@UsuarioID, @ProductoID, @Cantidad);
+        UPDATE Carrito
+        SET Cantidad = @Cantidad,
+            FechaAgregado = GETDATE()
+        WHERE UsuarioID = @UsuarioID 
+          AND ProductoID = @ProductoID;
     END
 END;
 GO
 
-CREATE PROCEDURE [dbo].[CarritoEliminar]
+CREATE PROCEDURE [dbo].[CarritoEliminar] ---- ELIMINAR DEL CARRITO ----
     @CarritoID INT
 AS
 BEGIN
@@ -773,30 +787,6 @@ BEGIN
     DELETE FROM Carrito WHERE CarritoID = @CarritoID;
 END;
 GO
-
-CREATE PROCEDURE [dbo].[CarritoObtener]
-    @UsuarioID INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT 
-        c.CarritoID,
-        c.ProductoID,
-        p.NombreProducto,
-        p.Precio,
-        c.Cantidad,
-        (p.Precio * c.Cantidad) AS Subtotal
-    FROM 
-        Carrito c
-    INNER JOIN 
-        Productos p ON c.ProductoID = p.ProductoID
-    WHERE 
-        c.UsuarioID = @UsuarioID;
-END;
-GO
-
-
 
 ------------------------------[UPDATES]------------------------------
 ----------------------------- Usuarios -----------------------------
