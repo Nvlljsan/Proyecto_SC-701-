@@ -53,16 +53,12 @@
                                             <span asp-validation-for="Direccion" class="text-danger"></span>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Rol</label>
-                                            <select asp-for="RolID" class="form-control" required>
-                                                <option value=""></option>
-                                                @if (ViewBag.Roles != null)
-                                                {
-                                                    foreach (var roles in ViewBag.Roles)
-                                                    {
-                                                        <option value="@roles.RolID">@roles.NombreRol</option>
-                                                    }
-                                                }
+                                            <label for="RolID">Rol</label>
+                                            <select asp-for="RolID" class="form-control">
+                                                <option value="">Seleccione un rol</option>
+                                                <option value="2">Instructor</option>
+                                                <option value="3">Cliente</option>
+                                                <option value="4">Empleado</option>
                                             </select>
                                             <span asp-validation-for="RolID" class="text-danger"></span>
                                         </div>

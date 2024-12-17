@@ -64,6 +64,26 @@ namespace ProyectoGymAPI.Controllers
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
+                var correoExistente = context.QueryFirstOrDefault<Usuarios>("UsuariosValidar", new { model.Email, model.Telefono });
+
+                if (correoExistente != null)
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El correo o telefono ya está registrado. Por favor, use uno diferente."
+                    });
+                }
+
+                if (model.Telefono.Length != 8 || !model.Telefono.All(char.IsDigit))
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El número de teléfono debe contener exactamente 8 dígitos y solo números."
+                    });
+                }
+
                 var respuesta = new Respuesta();
                 var result = context.Execute("Registro", new { model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
 

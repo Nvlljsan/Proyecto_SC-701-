@@ -97,6 +97,7 @@
 
                                     <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("Perfil","Usuarios")">Perfil</a>
                                             <a class="nav-link" href="@Url.Action("UsuariosLista","Usuarios")">Usuarios Registrados</a>
                                             <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a> 
                                         </nav>
@@ -207,6 +208,7 @@
 
                                     <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("Perfil","Usuarios")">Perfil</a>
                                             <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>
                                         </nav>
                                     </div>
@@ -296,7 +298,18 @@
                                     </div>
 
                                     <!-- Sección Usuarios -->
-                                    <!-- LOS CLIENTES NO PUEDEN VER LOS USUARIOS -->
+                                    <!-- LOS CLIENTES NO PUEDEN VER LOS USUARIOS, SOLO EL DE ELLOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Usuarios
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("Perfil","Usuarios")">Perfil</a>
+                                        </nav>
+                                    </div>
 
                                     <!-- Sección Productos -->
                                     <!-- LOS CLIENTES SOLO PUEDEN VER EL CATALOGO DE PRODUCTOS -->
@@ -381,6 +394,7 @@
 
                                     <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("Perfil","Usuarios")">Perfil</a>
                                             <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>
                                         </nav>
                                     </div>

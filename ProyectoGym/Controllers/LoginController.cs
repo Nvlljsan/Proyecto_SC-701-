@@ -176,12 +176,10 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout() //FUNCIONAL 100%
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Clear();
             return RedirectToAction("InicioSesion", "Login");
         }
 

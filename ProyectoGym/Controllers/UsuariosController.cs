@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoGym.Models;
 using ProyectoGym.Services;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace ProyectoGym.Controllers
@@ -37,6 +40,21 @@ namespace ProyectoGym.Controllers
                 }
 
                 return View(new List<Usuarios>());
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Perfil() //FUNCIONAL 100%
+        {
+            using (var client = _http.CreateClient())
+            {
+                var userActual = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+
+                var url = _conf.GetSection("Variables:UrlApi").Value + $"Usuarios/UsuarioR?UsuarioID={userActual}";
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Usuarios>().Result;
+                return View(result);
             }
         }
 
@@ -156,7 +174,30 @@ namespace ProyectoGym.Controllers
             }
         }
 
-       
+        [HttpPost]
+        public IActionResult EliminarPerfil(int UsuarioID) //FUNCIONAL 100%
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioD?usuarioID=" + UsuarioID;
+
+                var response = client.DeleteAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    return RedirectToAction("InicioSesion", "Login");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result?.Mensaje ?? "Error desconocido";
+                    return RedirectToAction("Perfil");
+                }
+            }
+        }
+
+
 
 
 

@@ -41,10 +41,6 @@
                     <td>
                         <div class="d-flex">
                             <a href="@Url.Action("UsuarioU", "Usuarios", new { UsuarioID = usuario.UsuarioID })" class="btn btn-primary">Editar</a>
-                            <form method="post" action="@Url.Action("UsuarioD", "Usuarios")">
-                                <input type="hidden" name="UsuarioID" value="@usuario.UsuarioID" />
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
                          </div>
                     </td>
                 </tr>
