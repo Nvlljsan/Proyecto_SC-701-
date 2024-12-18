@@ -1,0 +1,94 @@
+﻿@model ProyectoGym.Models.Usuarios
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+<h2 class="text-center">Editar Perfil</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header text-center">
+                    <h4>Actualiza tus datos</h4>
+                </div>
+                <div class="card-body">
+
+                    @if (ViewBag.Mensaje != null)
+                    {
+                        <div class="alert alert-danger text-center">@ViewBag.Mensaje</div>
+                    }
+
+                    <form asp-action="EditarPerfil" method="post">
+                        <input type="hidden" asp-for="UsuarioID" />
+
+                        <div class="mb-3">
+                            <label for="Nombre" class="form-label">Nombre</label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ingresa tu nombre" required />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Apellido" class="form-label">Apellido</label>
+                            <input asp-for="Apellido" class="form-control" placeholder="Ingresa tu apellido" required />
+                            <span asp-validation-for="Apellido" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">Correo Electrónico</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Ingresa tu email" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Telefono" class="form-label">Teléfono</label>
+                            <input asp-for="Telefono" class="form-control" placeholder="Ingresa tu teléfono" required />
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Direccion" class="form-label">Dirección</label>
+                            <input asp-for="Direccion" class="form-control" placeholder="Ingresa tu dirección" required />
+                            <span asp-validation-for="Direccion" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="RolID">Rol</label>
+                            <select asp-for="RolID" class="form-control">
+                                @if (ViewBag.Admin)
+                                {
+                                    <option value="1">Administracion</option>
+                                }
+                                else if (ViewBag.Instruct)
+                                {
+                                    <option value="2">Instructor</option>
+                                }
+                                else if (ViewBag.Client) 
+                                {
+                                    <option value="3">Cliente</option>
+                                }
+                                else if (ViewBag.Emp) 
+                                {
+                                    <option value="4">Empleado</option>
+                                }
+                                else 
+                                {
+                                    <option value="3">Cliente</option>
+                                }
+
+                            </select>
+                            <span asp-validation-for="RolID" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <a asp-action="Perfil" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

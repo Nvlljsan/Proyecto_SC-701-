@@ -55,10 +55,18 @@
                                         <div class="mb-3">
                                             <label for="RolID">Rol</label>
                                             <select asp-for="RolID" class="form-control">
-                                                <option value="">Seleccione un rol</option>
-                                                <option value="2">Instructor</option>
-                                                <option value="3">Cliente</option>
-                                                <option value="4">Empleado</option>
+                                                @if (ViewBag.verificarRol) 
+                                                { 
+                                                    <option value="1">Administracion</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="">Seleccione un rol</option>
+                                                    <option value="2">Instructor</option>
+                                                    <option value="3">Cliente</option>
+                                                    <option value="4">Empleado</option>
+                                                }
+                                                
                                             </select>
                                             <span asp-validation-for="RolID" class="text-danger"></span>
                                         </div>

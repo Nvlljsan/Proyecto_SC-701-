@@ -27,7 +27,7 @@
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-6">
-                            <input id="cantidad-@producto.ProductoID" type="number" class="form-control text-center" value="1" min="1" max="10" onkeypress="return false;">
+                            <input id="cantidad-@producto.ProductoID" type="number" class="form-control text-center" value="1" min="1" max="@producto.Stock" onkeypress="return false;" />
                         </div>
                         <div class="col-6">
                             <button type="button" class="btn btn-primary w-100" onclick="AgregarAlCarrito(@producto.ProductoID);">Agregar</button>
