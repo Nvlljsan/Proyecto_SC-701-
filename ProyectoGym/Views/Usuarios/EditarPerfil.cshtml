@@ -80,7 +80,13 @@
                             </select>
                             <span asp-validation-for="RolID" class="text-danger"></span>
                         </div>
-
+                        <div class="mb-3">
+                            <label for="Activo">Estado</label>
+                            <select asp-for="Activo" class="form-control">
+                                <option value="1">Activo</option>
+                            </select>
+                            <span asp-validation-for="Activo" class="text-danger"></span>
+                        </div>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                             <a asp-action="Perfil" class="btn btn-secondary">Cancelar</a>

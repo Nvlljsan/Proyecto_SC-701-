@@ -44,7 +44,7 @@ namespace ProyectoGymAPI.Controllers
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Correo o contraseña incorrectos.";
+                    respuesta.Mensaje = "Datos incorrectos o Usuario Inactivo.";
                 }
 
                 return Ok(respuesta);

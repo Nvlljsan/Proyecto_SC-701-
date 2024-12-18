@@ -25,6 +25,7 @@
                 <th>Email</th>
                 <th>Telefono</th>
                 <th>Direccion</th>
+                <th>Estado</th>
                 <th>Configuraciones</th>
             </tr>
         </thead>
@@ -38,6 +39,16 @@
                     <td>@usuario.Email</td>
                     <td>@usuario.Telefono</td>
                     <td>@usuario.Direccion</td>
+                    <td>
+                        @if (usuario.Activo == true)
+                        {
+                            <span class="text-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">Inactivo</span>
+                        }
+                    </td>
                     <td>
                         <div class="d-flex">
                             <a href="@Url.Action("UsuarioU", "Usuarios", new { UsuarioID = usuario.UsuarioID })" class="btn btn-primary">Editar</a>

@@ -132,7 +132,7 @@ namespace ProyectoGymAPI.Controllers
                 }
 
                 var respuesta = new Respuesta();
-                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Telefono, model.Direccion, model.RolID });
+                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Telefono, model.Direccion, model.RolID, model.Activo });
 
                 if (result > 0)
                 {

@@ -234,7 +234,6 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
         [HttpPost]
         public IActionResult EliminarPerfil(int UsuarioID) //FUNCIONAL 100%
         {
