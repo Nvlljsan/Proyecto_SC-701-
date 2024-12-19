@@ -59,6 +59,26 @@ namespace ProyectoGymAPI.Controllers
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
+                var correoExistente = context.QueryFirstOrDefault<Usuarios>("UsuariosInfo", new { model.Email, model.Telefono });
+
+                if (correoExistente != null)
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El correo o telefono ya está registrado. Por favor, use uno diferente."
+                    });
+                }
+
+                if (model.Telefono.Length != 8 || !model.Telefono.All(char.IsDigit))
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El número de teléfono debe contener exactamente 8 dígitos y solo números."
+                    });
+                }
+
                 var respuesta = new Respuesta();
                 var result = context.Execute("UsuarioC", new { model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
 
@@ -79,7 +99,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("UsuarioR")]
-        public IActionResult UsuarioR(int usuarioID) //PROBAR
+        public IActionResult UsuarioR(int usuarioID) //FUNCIONAL 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -102,9 +122,17 @@ namespace ProyectoGymAPI.Controllers
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var respuesta = new Respuesta();
+                if (model.Telefono.Length != 8 || !model.Telefono.All(char.IsDigit))
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El número de teléfono debe contener exactamente 8 dígitos y solo números."
+                    });
+                }
 
-                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Telefono, model.Direccion, model.RolID });
+                var respuesta = new Respuesta();
+                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Telefono, model.Direccion, model.RolID, model.Activo });
 
                 if (result > 0)
                 {

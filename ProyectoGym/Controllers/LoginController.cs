@@ -156,7 +156,6 @@ namespace ProyectoGym.Controllers
 
                 JsonContent datos = JsonContent.Create(model);
 
-                // Log para inspeccionar el JSON enviado
                 string jsonDatos = datos.ReadAsStringAsync().Result;
                 Console.WriteLine($"JSON Enviado: {jsonDatos}");
 
@@ -176,12 +175,10 @@ namespace ProyectoGym.Controllers
             }
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout() //FUNCIONAL 100%
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Clear();
             return RedirectToAction("InicioSesion", "Login");
         }
 

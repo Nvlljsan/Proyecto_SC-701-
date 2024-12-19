@@ -20,7 +20,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPost]
         [Route("AgregarAlCarrito")]
-        public IActionResult AgregarAlCarrito(Carrito model) //FUNCIONA PERO EL API MANDA -1
+        public IActionResult AgregarAlCarrito(Carrito model) //FUNCIONAL 100%
         {
             Console.WriteLine($"UsuarioID: {model.UsuarioID}, ProductoID: {model.ProductoID}, Cantidad: {model.Cantidad}");
 

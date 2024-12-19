@@ -17,7 +17,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult AgregarAlCarrito(int productoID, int cantidad) //FUNCIONA PERO RECIBE EL -1 DEL API
+        public IActionResult AgregarAlCarrito(int productoID, int cantidad) //FUNCIONAL 100%
         {
 
             using (var client = _http.CreateClient())

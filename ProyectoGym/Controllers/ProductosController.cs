@@ -142,7 +142,7 @@ namespace ProyectoGym.Controllers
         {
             using (var client = _http.CreateClient())
             {
-                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductosLista";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductosCatalogo";
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
@@ -150,7 +150,8 @@ namespace ProyectoGym.Controllers
                 if (result != null && result.Codigo == 0)
                 {
                     var datosContenido = JsonSerializer.Deserialize<List<Productos>>((JsonElement)result.Contenido!);
-                    return View(datosContenido);
+                    var productosFiltrados = datosContenido?.Where(p => p.Stock > 0).ToList();
+                    return View(productosFiltrados);
                 }
 
                 return View(new List<Productos>());

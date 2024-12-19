@@ -44,7 +44,7 @@ namespace ProyectoGymAPI.Controllers
                 else
                 {
                     respuesta.Codigo = -1;
-                    respuesta.Mensaje = "Correo o contraseña incorrectos.";
+                    respuesta.Mensaje = "Datos incorrectos o Usuario Inactivo.";
                 }
 
                 return Ok(respuesta);
@@ -64,6 +64,26 @@ namespace ProyectoGymAPI.Controllers
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
+                var correoExistente = context.QueryFirstOrDefault<Usuarios>("UsuariosInfo", new { model.Email, model.Telefono });
+
+                if (correoExistente != null)
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El correo o telefono ya está registrado. Por favor, use uno diferente."
+                    });
+                }
+
+                if (model.Telefono.Length != 8 || !model.Telefono.All(char.IsDigit))
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El número de teléfono debe contener exactamente 8 dígitos y solo números."
+                    });
+                }
+
                 var respuesta = new Respuesta();
                 var result = context.Execute("Registro", new { model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
 
@@ -147,7 +167,6 @@ namespace ProyectoGymAPI.Controllers
                         if (eliminar > 0)
                         {
                             respuesta.Codigo = 0;
-                            respuesta.Mensaje = "La contraseña se ha actualizado correctamente.";
                         }
                         else
                         {

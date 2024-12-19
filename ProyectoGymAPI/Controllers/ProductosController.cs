@@ -44,8 +44,26 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPost]
         [Route("ProductoC")]
-        public IActionResult ProductoC(Productos model) //FUNCIONAL 90%
+        public IActionResult ProductoC(Productos model) //FUNCIONAL 100%
         {
+            if (model.Precio <= 0)
+            {
+                return BadRequest(new Respuesta
+                {
+                    Codigo = -1,
+                    Mensaje = "El precio debe ser mayor a 0."
+                });
+            }
+
+            if (model.Stock < 0)
+            {
+                return BadRequest(new Respuesta
+                {
+                    Codigo = -1,
+                    Mensaje = "El stock no puede ser menor a 0."
+                });
+            }
+
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
@@ -89,6 +107,24 @@ namespace ProyectoGymAPI.Controllers
         [Route("ProductoU")]
         public IActionResult ProductoU(Productos model) //FUNCIONAL 100%
         {
+            if (model.Precio <= 0)
+            {
+                return BadRequest(new Respuesta
+                {
+                    Codigo = -1,
+                    Mensaje = "El precio debe ser mayor a 0."
+                });
+            }
+
+            if (model.Stock < 0)
+            {
+                return BadRequest(new Respuesta
+                {
+                    Codigo = -1,
+                    Mensaje = "El stock no puede ser menor a 0."
+                });
+            }
+
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
@@ -127,6 +163,29 @@ namespace ProyectoGymAPI.Controllers
                 {
                     respuesta.Codigo = -1;
                     respuesta.Mensaje = "Error al eliminar el producto.";
+                }
+                return Ok(respuesta);
+            }
+        }
+
+        [HttpGet]
+        [Route("ProductosCatalogo")]
+        public IActionResult ProductosCatalogo() //FUNCIONAL 100%
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.Query<Productos>("ProductosCatalogo", new { });
+
+                if (result != null)
+                {
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = result;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No hay productos registrados en el sistema";
                 }
                 return Ok(respuesta);
             }

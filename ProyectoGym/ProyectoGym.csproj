@@ -14,4 +14,8 @@
     <None Include="Views\Login\InicioSesion.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" Version="2024.12.1" />
+  </ItemGroup>
+
 </Project>
