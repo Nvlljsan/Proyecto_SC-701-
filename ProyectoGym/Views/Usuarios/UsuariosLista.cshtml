@@ -1,58 +1,67 @@
 ﻿@model List<ProyectoGym.Models.Usuarios>
 
-@{
-    ViewData["Title"] = "Lista de Usuarios";
-}
-
-<h1>@ViewData["Title"]</h1>
-
-<hr />
-
-<div>
-    <a href="@Url.Action("UsuarioC", "Usuarios")" class="btn btn-success">Nuevo Usuario</a>
-</div>
-
-<hr/>
-
-@if (Model != null && Model.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th># de usuario</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Email</th>
-                <th>Telefono</th>
-                <th>Direccion</th>
-                <th>Configuraciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var usuario in Model)
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-primary text-white">
+            <h2 class="text-center mb-0">Lista de Usuarios</h2>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="fs-5">Gestión de usuarios registrados</span>
+                <a href="@Url.Action("UsuarioC", "Usuarios")" class="btn btn-sm btn-success">
+                    <i class="fas fa-user-plus"></i> Nuevo Usuario
+                </a>
+            </div>
+            @if (Model != null && Model.Any())
             {
-                <tr>
-                    <td>@usuario.UsuarioID</td>
-                    <td>@usuario.Nombre</td>
-                    <td>@usuario.Apellido</td>
-                    <td>@usuario.Email</td>
-                    <td>@usuario.Telefono</td>
-                    <td>@usuario.Direccion</td>
-                    <td>
-                        <div class="d-flex">
-                            <a href="@Url.Action("UsuarioU", "Usuarios", new { UsuarioID = usuario.UsuarioID })" class="btn btn-primary">Editar</a>
-                            <form method="post" action="@Url.Action("UsuarioD", "Usuarios")">
-                                <input type="hidden" name="UsuarioID" value="@usuario.UsuarioID" />
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                         </div>
-                    </td>
-                </tr>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-primary">
+                            <tr class="text-center">
+                                <th># de Usuario</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var usuario in Model)
+                            {
+                                <tr>
+                                    <td>@usuario.UsuarioID</td>
+                                    <td>@usuario.Nombre</td>
+                                    <td>@usuario.Apellido</td>
+                                    <td>@usuario.Email</td>
+                                    <td>@usuario.Telefono</td>
+                                    <td>@usuario.Direccion</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="@Url.Action("UsuarioU", "Usuarios", new { UsuarioID = usuario.UsuarioID })" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            <form method="post" action="@Url.Action("UsuarioD", "Usuarios")" class="d-inline">
+                                                <input type="hidden" name="UsuarioID" value="@usuario.UsuarioID" />
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No se encontraron usuarios.</p>
-}
+            else
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    No se encontraron usuarios registrados.
+                </div>
+            }
+        </div>
+    </div>
+</div>

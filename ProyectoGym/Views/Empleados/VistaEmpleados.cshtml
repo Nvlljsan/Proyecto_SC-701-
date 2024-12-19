@@ -1,33 +1,50 @@
 ﻿@model List<ProyectoGym.Models.Empleados>
 
-<h2>Gestión de Empleados</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Puesto</th>
-            <th>Fecha de Contratación</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var empleado in Model)
-        {
-            <tr>
-                <td>@empleado.Nombre</td>
-                <td>@empleado.Apellido</td>
-                <td>@empleado.Email</td>
-                <td>@empleado.Telefono</td>
-                <td>@empleado.Puesto</td>
-                <td>@empleado.FechaContratacion.ToShortDateString()</td>
-                <td>
-                    <a asp-action="ModificarEmpleado" asp-route-id="@empleado.EmpleadoID" class="btn btn-warning">Modificar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<a asp-action="AgregarEmpleado" class="btn btn-primary">Agregar Empleado</a>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header">
+            <h2 class="text-center font-weight-light my-4">Gestión de Empleados</h2>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Puesto</th>
+                            <th>Fecha de Contratación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var empleado in Model)
+
+                        {
+                            <tr>
+                                <td>@empleado.Nombre</td>
+                                <td>@empleado.Apellido</td>
+                                <td>@empleado.Email</td>
+                                <td>@empleado.Telefono</td>
+                                <td>@empleado.Puesto</td>
+                                <td>@empleado.FechaContratacion.ToShortDateString()</td>
+                                <td>
+                                    <a asp-action="ModificarEmpleado" asp-route-id="@empleado.EmpleadoID" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Modificar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-center">No se encontraron empleados registrados.</p>
+            }
+        </div>
+    </div>
+</div>

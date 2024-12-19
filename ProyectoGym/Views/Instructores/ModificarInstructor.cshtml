@@ -1,29 +1,44 @@
 ﻿@model ProyectoGym.Models.Instructores
 
-<h2>Modificar Instructor</h2>
-@if (ViewBag.Mensaje != null)
-{
-    <div class="alert alert-danger text-center">@ViewBag.Mensaje</div>
-}
+<div class="container mt-5">
+    <h2 class="text-center">Modificar Instructor</h2>
 
-<form asp-action="ModificarInstructor" method="post">
-    <input type="hidden" asp-for="InstructorID" />
-    <div class="mb-3">
-        <label for="Nombre">Nombre</label>
-        <input asp-for="Nombre" class="form-control" disabled />
-    </div>
-    <div class="mb-3">
-        <label for="Apellido">Apellido</label>
-        <input asp-for="Apellido" class="form-control" disabled />
-    </div>
-    <div class="mb-3">
-        <label for="Especialidad">Especialidad</label>
-        <input asp-for="Especialidad" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label for="ExperienciaAnios">Años de Experiencia</label>
-        <input asp-for="ExperienciaAnios" class="form-control" type="number" />
-    </div>
-    <button type="submit" class="btn btn-success">Guardar</button>
-    <a asp-action="VistaInstructores" class="btn btn-secondary">Cancelar</a>
-</form>
+    @if (ViewBag.Mensaje != null)
+
+    {
+        <div class="alert alert-danger text-center mt-4">@ViewBag.Mensaje</div>
+    }
+
+    <form asp-action="ModificarInstructor" method="post" class="mt-4">
+        <input type="hidden" asp-for="InstructorID" />
+
+        <div class="mb-3">
+            <label for="Nombre" class="form-label">Nombre</label>
+            <input asp-for="Nombre" class="form-control" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label for="Apellido" class="form-label">Apellido</label>
+            <input asp-for="Apellido" class="form-control" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label for="Especialidad" class="form-label">Especialidad</label>
+            <input asp-for="Especialidad" class="form-control" placeholder="Ingrese la especialidad" />
+        </div>
+
+        <div class="mb-3">
+            <label for="ExperienciaAnios" class="form-label">Años de Experiencia</label>
+            <input asp-for="ExperienciaAnios" class="form-control" type="number" placeholder="Ingrese años de experiencia" />
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-success">
+                <i class="fa fa-save"></i> Guardar
+            </button>
+            <a asp-action="VistaInstructores" class="btn btn-secondary">
+                <i class="fa fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>

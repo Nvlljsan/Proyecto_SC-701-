@@ -1,58 +1,72 @@
 ﻿@model ProyectoGym.Models.Reservas
 
-<h2>Crear Reserva</h2>
-
-<form asp-action="InsertarReserva" asp-controller="Reservas" method="post">
-    <div class="form-group">
-        <label for="UsuarioID">Usuario</label>
-        <select asp-for="UsuarioID" class="form-control">
-            <option value="">-- Selecciona un Usuario --</option>
-            @{
-                var usuarios = ViewBag.DropDownUsuarios as List<Usuarios>;
-                if (usuarios != null)
-                {
-                    @foreach (var item in usuarios)
-                    {
-                        <option value="@item.UsuarioID">@item.Nombre</option>
-                    }
-                }
-            }
-        </select>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h2 class="card-title text-center mb-0">Crear Reserva</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="InsertarReserva" asp-controller="Reservas" method="post">
+                <div class="mb-3">
+                    <label for="UsuarioID" class="form-label">Usuario</label>
+                    <select asp-for="UsuarioID" class="form-select">
+                        <option value="">-- Selecciona un Usuario --</option>
+                        @{
+                            var usuarios = ViewBag.DropDownUsuarios as List<Usuarios>;
+                            if (usuarios != null)
+                            {
+                                foreach (var item in usuarios)
+                                {
+                                    <option value="@item.UsuarioID">@item.Nombre</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="FechaReserva" class="form-label">Fecha</label>
+                    <input asp-for="FechaReserva" type="date" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="HoraInicio" class="form-label">Hora Inicio</label>
+                    <input asp-for="HoraInicio" type="time" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="HoraFin" class="form-label">Hora Fin</label>
+                    <input asp-for="HoraFin" type="time" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="Estado" class="form-label">Estado</label>
+                    <select asp-for="Estado" class="form-select">
+                        <option value="true">Activa</option>
+                        <option value="false">Cancelada</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="MaquinaID" class="form-label">Máquina</label>
+                    <select asp-for="MaquinaID" class="form-select">
+                        <option value="">-- Selecciona una Máquina --</option>
+                        @{
+                            var maquinas = ViewBag.DropDownMaquinas as List<Maquinas>;
+                            if (maquinas != null)
+                            {
+                                foreach (var item in maquinas)
+                                {
+                                    <option value="@item.MaquinaID">@item.Nombre</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-primary me-3">
+                        <i class="fa fa-check"></i> Procesar
+                    </button>
+                    <a href="@Url.Action("ConsultarReservas", "Reservas")" class="btn btn-secondary">
+                        <i class="fa fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="FechaReserva">Fecha</label>
-        <input asp-for="FechaReserva" type="date" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label for="HoraInicio">Hora Inicio</label>
-        <input asp-for="HoraInicio" type="time" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label for="HoraFin">Hora Fin</label>
-        <input asp-for="HoraFin" type="time" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label for="Estado">Estado</label>
-        <select asp-for="Estado" class="form-control">
-            <option value="true">Activa</option>
-            <option value="false">Cancelada</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="MaquinaID">Máquina</label>
-        <select asp-for="MaquinaID" class="form-control">
-            <option value="">-- Selecciona un Usuario --</option>
-            @{
-                var maquinas = ViewBag.DropDownMaquinas as List<Maquinas>;
-                if (maquinas != null)
-                {
-                    @foreach (var item in maquinas)
-                    {
-                        <option value="@item.MaquinaID">@item.Nombre</option>
-                    }
-                }
-            }
-        </select>
-    </div>
-    <input type="submit" class="btn btn-primary" value="Procesar">
-</form>
+</div>

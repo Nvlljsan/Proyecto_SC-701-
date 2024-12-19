@@ -1,56 +1,61 @@
 ﻿@model ProyectoGym.Models.VentaViewModel
 
-<h2>Registrar Venta</h2>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h2 class="card-title text-center mb-0">Registrar Venta</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="InsertarVenta" asp-controller="Ventas" method="post">
+                <div class="mb-3">
+                    <label for="UsuarioID" class="form-label">Usuario</label>
+                    <select asp-for="UsuarioID" class="form-select">
+                        <option value="">-- Selecciona un Usuario --</option>
+                        @if (ViewBag.DropDownUsuarios is List<Usuarios> usuarios && usuarios.Any())
+                        {
+                            @foreach (var item in usuarios)
+                            {
+                                <option value="@item.UsuarioID">@item.Nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
 
-<form asp-action="InsertarVenta" asp-controller="Ventas" method="post">
-    <div class="form-group">
-        <label for="UsuarioID">Usuario</label>
-        <select asp-for="UsuarioID" class="form-control">
-            <option value="">-- Selecciona un Usuario --</option>
-            @{
-                var usuarios = ViewBag.DropDownUsuarios as List<Usuarios>;
-                if (usuarios != null)
-                {
-                    @foreach (var item in usuarios)
-                    {
-                        <option value="@item.UsuarioID">@item.Nombre</option>
-                    }
-                }
-            }
-        </select>
+                <div class="mb-3">
+                    <label for="ProductoID" class="form-label">Producto</label>
+                    <select asp-for="ProductoID" class="form-select">
+                        <option value="">-- Selecciona un Producto --</option>
+                        @if (ViewBag.DropDownProductos is List<Productos> productos && productos.Any())
+                        {
+                            @foreach (var item in productos)
+                            {
+                                <option value="@item.ProductoID">@item.NombreProducto</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Cantidad" class="form-label">Cantidad</label>
+                    <input asp-for="Cantidad" type="number" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="Total" class="form-label">Total</label>
+                    <input asp-for="Total" type="number" step="0.01" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="FechaVenta" class="form-label">Fecha</label>
+                    <input asp-for="FechaVenta" type="date" class="form-control" />
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-check"></i> Procesar
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="ProductoID">Producto</label>
-        <select asp-for="ProductoID" class="form-control">
-            <option value="">-- Selecciona un Producto --</option>
-            @{
-                var productos = ViewBag.DropDownProductos as List<Productos>;
-                if (productos != null)
-                {
-                    @foreach (var item in productos)
-                    {
-                        <option value="@item.ProductoID">@item.NombreProducto</option>
-                    }
-                }
-            }
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="Cantidad">Cantidad</label>
-        <input asp-for="Cantidad" type="number" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="Total">Total</label>
-        <input asp-for="Total" type="number" step="0.01" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="FechaVenta">Fecha</label>
-        <input asp-for="FechaVenta" type="date" class="form-control" />
-    </div>
-
-    <input type="submit" class="btn btn-primary" value="Procesar">
-</form>
+</div>
