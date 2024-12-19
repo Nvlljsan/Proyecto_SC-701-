@@ -156,7 +156,6 @@ namespace ProyectoGym.Controllers
 
                 JsonContent datos = JsonContent.Create(model);
 
-                // Log para inspeccionar el JSON enviado
                 string jsonDatos = datos.ReadAsStringAsync().Result;
                 Console.WriteLine($"JSON Enviado: {jsonDatos}");
 

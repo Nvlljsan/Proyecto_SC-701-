@@ -59,7 +59,7 @@ namespace ProyectoGymAPI.Controllers
 
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var correoExistente = context.QueryFirstOrDefault<Usuarios>("UsuariosValidar", new { model.Email, model.Telefono });
+                var correoExistente = context.QueryFirstOrDefault<Usuarios>("UsuariosInfo", new { model.Email, model.Telefono });
 
                 if (correoExistente != null)
                 {
