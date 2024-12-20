@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -28,14 +29,15 @@ namespace ProyectoGymAPI.Controllers
             {
                 var respuesta = new Respuesta();
                 var result = context.Execute("CarritoAgregar", new { model.UsuarioID, model.ProductoID, model.Cantidad });
+                    
                 Console.WriteLine($"Resultado del SP: {result}");
-
-                if (result > 0) 
+                
+                if (result > 0)
                 {
                     respuesta.Codigo = 0;
-                    respuesta.Mensaje = "Producto agregado al carrito.";
+                    respuesta.Mensaje = "Producto agregado al carrito.";   
                 }
-                else
+                else    
                 {
                     respuesta.Codigo = -1;
                     respuesta.Mensaje = "No se pudo agregar el producto al carrito.";
