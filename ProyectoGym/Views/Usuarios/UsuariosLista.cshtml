@@ -24,6 +24,7 @@
                                 <th>Email</th>
                                 <th>Teléfono</th>
                                 <th>Dirección</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -37,17 +38,21 @@
                                     <td>@usuario.Email</td>
                                     <td>@usuario.Telefono</td>
                                     <td>@usuario.Direccion</td>
+                                    <td>
+                                        @if (usuario.Activo == true)
+                                        {
+                                            <span class="text-success">Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">Inactivo</span>
+                                        }
+                                    </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
                                             <a href="@Url.Action("UsuarioU", "Usuarios", new { UsuarioID = usuario.UsuarioID })" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <form method="post" action="@Url.Action("UsuarioD", "Usuarios")" class="d-inline">
-                                                <input type="hidden" name="UsuarioID" value="@usuario.UsuarioID" />
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
