@@ -74,8 +74,6 @@ namespace ProyectoGym.Controllers
         [HttpPost]
         public IActionResult ClienteU(Clientes model)
         {
-           
-
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Clientes/ActualizarCliente";

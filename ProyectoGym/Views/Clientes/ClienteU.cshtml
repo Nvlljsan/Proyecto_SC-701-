@@ -25,34 +25,34 @@
                                     <form asp-action="ClienteU" asp-controller="Clientes">
 
                                         <div class="mb-3">
-                                          
-                                            <input type="number" asp-for="ClienteID" class="form-control" readonly>
+
+                                            <input type="number" asp-for="ClienteID" class="form-control" hidden=true readonly>
 
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Nombre</label>
                                             <input type="text" asp-for="Nombre" class="form-control" readonly>
-                                      
+                                            <span asp-validation-for="Nombre" class="text-danger"></span>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Fecha de Incio</label>
                                             <input type="date" asp-for="FechaInicioMembresia" class="form-control" required>
-                                         
+
                                         </div>
-                                       
+
                                         <div class="mb-3">
                                             <label class="form-label">Fecha fin de Membresia</label>
-                                            <input type="date" asp-for="FechaFinMembresia" class="form-control"  required>
-                                    
+                                            <input type="date" asp-for="FechaFinMembresia" class="form-control" required>
+
                                         </div>
-                          
+
                                         <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
-                                          
+
                                             <button type="submit" class="btn btn-primary">Actualizar</button>
                                         </div>
                                     </form>
                                 </div>
-                               
+
                             </div>
                         </div>
                     </div>
@@ -61,4 +61,4 @@
         </div>
     </div>
 
-    </body>
+</body>
