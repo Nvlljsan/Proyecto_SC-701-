@@ -2,81 +2,77 @@
     ViewData["Title"] = "Home Page";
 }
 
-<hr />
-<div class="text-center">  
-    <h1 class="display-4" style="font-family: Tahoma, sans-serif;">Neon Fitness</h1>
-    <p>Sistema dedicado a la administracion del gimnasio, administracion de usuarios, productos, proveedores, entre otros</a>.</p>
+<div class="hero">
+    <div class="text-center">
+        <h1>Neon Fitness</h1>
+        <p>Sistema dedicado a la administración del gimnasio, usuarios, productos, proveedores y más.</p>
+    </div>
 </div>
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Opciones</h1>
+<div class="container mt-5">
     <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">Usuarios</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Ver detalles</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Productos</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Ver detalless</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">Proveedores</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Ver detalles</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">Catalogo</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Ver detalles</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xl-6">
+        <!-- Sección de Estadísticas y Calendario -->
+        <div class="col-lg-8">
+            <h2 class="text-center mt-5 mb-4">Calendario</h2>
             <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-area me-1"></i>
-                    Estadisticas de Membresía
+                <div class="card-header bg-dark text-white">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    Calendario
                 </div>
-                <div class="card-body"></div>
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
             </div>
         </div>
-        <div class="col-xl-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-bar me-1"></i>
-                    Productos mas vendidos
-                </div>
-                <div class="card-body"></div>
-            </div>
-        </div>
-    </div>
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            Calendario
-        </div>
-        <div class="card-body">
-            <div id='calendar'>
 
+        <!-- Sección de Promoción -->
+        <div class="col-lg-4">
+            <div class="card mb-4 shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0 text-center">Promociones</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="~/images/gym-logo.png" alt="Promoción Gym" class="img-fluid rounded mb-3">
+                    <h6>¡Obtén un 20% de descuento en tu membresía anual!</h6>
+                    <p class="text-muted">Promoción válida hasta el <strong>@DateTime.Now.AddMonths(1).ToString("dd/MM/yyyy")</strong>. ¡No te lo pierdas!</p>
+                    <a href="@Url.Action("RegistrarMembresia", "Membresias")" class="btn btn-success">Únete Ahora</a>
+                </div>
+            </div>
+
+            <div class="card mb-4 shadow-lg border-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0 text-center">Clases Especiales</h5>
+                </div>
+                <div class="card-body text-center">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-dumbbell"></i> Clase de Yoga: Lunes y Miércoles</li>
+                        <li><i class="fas fa-running"></i> Entrenamiento Funcional: Viernes</li>
+                        <li><i class="fas fa-swimmer"></i> Natación: Sábados</li>
+                    </ul>
+                    <a href="@Url.Action("ClasesEspeciales", "Clases")" class="btn btn-primary">Más Información</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            events: [
+                { title: 'Clase de yoga', start: new Date().toISOString().split('T')[0] },
+                { title: 'Entrenamiento personal', start: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString().split('T')[0] },
+                { title: 'Mantenimiento de equipos', start: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0] }
+            ]
+        });
+
+        calendar.render();
+    });
+</script>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>

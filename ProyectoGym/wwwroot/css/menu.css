@@ -1,0 +1,29 @@
+﻿
+.hero {
+    background-image: url('/images/Gimnasio.png');
+    background-size: cover;
+    background-position: center;
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+    .hero h1 {
+        font-size: 3rem;
+        font-family: Tahoma, sans-serif;
+    }
+
+    .hero p {
+        font-size: 1.5rem;
+    }
+
+.card {
+    transition: transform 0.2s;
+}
+
+    .card:hover {
+        transform: scale(1.05);
+    }
