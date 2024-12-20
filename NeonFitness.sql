@@ -495,16 +495,45 @@ BEGIN
 END;
 
 	
-CREATE PROCEDURE [dbo].[UsuarioR] ---- READ ---- 
-    @UsuarioID INT
+CREATE PROCEDURE [dbo].[UsuariosInfo]
+    @Email NVARCHAR(100),
+	@Telefono NVARCHAR(20)
 AS
 BEGIN
-    SELECT UsuarioID, Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID
-    FROM Usuarios
-    WHERE UsuarioID = @UsuarioID;
+    SET NOCOUNT ON;
+
+    SELECT 
+        U.UsuarioID,
+        U.Nombre,
+        U.Email,
+	U.Telefono,
+        U.RolID,
+        R.NombreRol
+    FROM Usuarios U
+    INNER JOIN Roles R ON U.RolID = R.RolID
+    WHERE U.Email = @Email OR U.Telefono = @Telefono;
 END;
 GO
-	
+
+CREATE PROCEDURE [dbo].[UsuariosValidar]
+    @Email NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        U.UsuarioID,
+        U.Nombre,
+        U.Email,
+	U.Telefono,
+        U.RolID,
+        R.NombreRol
+    FROM Usuarios U
+    INNER JOIN Roles R ON U.RolID = R.RolID
+    WHERE U.Email = @Email;
+END;
+GO
+
 CREATE PROCEDURE [dbo].[UsuarioU]
     @UsuarioID INT,
     @Nombre NVARCHAR(50),
