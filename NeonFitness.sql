@@ -158,8 +158,10 @@ ALTER COLUMN ExperienciaAnios INT NULL;
 
 ALTER TABLE Productos
 ADD Imagen VARCHAR(50) NOT NULL;
------------------------------ INSERTS -----------------------------
 
+ALTER TABLE Usuarios
+ADD Activo BIT DEFAULT 1 NOT NULL;
+----------------------------- INSERTS -----------------------------
 ----------------------------- Roles -----------------------------
 INSERT INTO Roles (RolID, NombreRol) VALUES (1, 'Administrador');
 INSERT INTO Roles (RolID, NombreRol) VALUES (2, 'Instructor');
@@ -169,22 +171,22 @@ INSERT INTO Roles (RolID, NombreRol) VALUES (4, 'Empleado');
 
 ----------------------------- STORED PROCEDURES ----------------------------
 ----------------------------- Clientes ----------------------------
-Create PROCEDURE dbo.ActualizarCliente
-@ClienteID int,        
-@FechaInicioMembresia datetime,
-@FechaFinMembresia datetime,
-@MembresiaActiva bit                  
+Create PROCEDURE [dbo].[ActualizarCliente]
+	@ClienteID int,        
+	@FechaInicioMembresia datetime,
+	@FechaFinMembresia datetime,
+	@MembresiaActiva bit        
 AS
 BEGIN
-UPDate dbo.Clientes
-set FechaInicioMembresia =@FechaInicioMembresia,
-    FechaFinMembresia = @FechaFinMembresia,	
-	MembresiaActiva = 	@MembresiaActiva
-	where ClienteID = @ClienteID
-END;
+	UPDate dbo.Clientes
+	set FechaInicioMembresia =@FechaInicioMembresia,
+		FechaFinMembresia = @FechaFinMembresia,	
+		MembresiaActiva = 	@MembresiaActiva
+		where ClienteID = @ClienteID
+	END;
 GO
 
-CREATE PROCEDURE dbo.ClienteD
+CREATE PROCEDURE [dbo].[ClienteD]
     @ClienteID int
 AS
 BEGIN
@@ -194,7 +196,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE dbo.ClientesR  
+CREATE PROCEDURE [dbo].[ClientesR]
 AS
 BEGIN
     SELECT ClienteID,C.UsuarioID,U.Nombre,MembresiaActiva,FechaInicioMembresia,FechaFinMembresia
@@ -203,7 +205,7 @@ BEGIN
 END;
 GO
 
-Create PROCEDURE dbo.ConsultarCliente
+Create PROCEDURE [dbo].[ConsultarCliente]
     @ClienteID INT
 AS
 BEGIN
@@ -216,44 +218,64 @@ END;
 GO
 	
 ----------------------------- Maquinas ----------------------------
-CREATE procedure dbo.MaquinasC
-@Nombre	varchar(100),
-@Descripcion	text,
-@Ubicacion	varchar(100)
+CREATE procedure [dbo].[MaquinasC]
+	@Nombre	varchar(100),
+	@Descripcion	text,
+	@Ubicacion	varchar(100)
 AS
 BEGIN
-INSERT INTO Maquinas(Nombre, Descripcion, Ubicacion, Estado)
-     VALUES(@Nombre, @Descripcion, @Ubicacion, 1);
-END;
+INSERT INTO Maquinas( Nombre, Descripcion, Ubicacion, Estado)
+VALUES ( @Nombre, @Descripcion, @Ubicacion, 1);
+	END;
 GO
 	
-CREATE PROCEDURE dbo.MaquinasR  
+CREATE PROCEDURE [dbo].[MaquinasR]   
 AS
 BEGIN
-    SELECT[MaquinaID],[Nombre],[Descripcion],[Ubicacion],[Estado]
-  FROM [NeonFitnessDB].[dbo].[Maquinas]
+  SELECT[MaquinaID],[Nombre],[Descripcion],[Ubicacion],[Estado]
+  FROM [NeonFitnessDB].[dbo].[Maquinas]  
 END;
 GO
 	
 CREATE PROCEDURE [dbo].[MaquinasU]
-	@MaquinaID int,         
-	@Nombre NVARCHAR(100),
-	@Descripcion NVARCHAR(255),
+		@MaquinaID int,         
+        @Nombre NVARCHAR(100) ,
+		@Descripcion NVARCHAR(255),
     	@Ubicacion NVARCHAR(100),
-	@Estado BIT               
+		@Estado BIT         
 AS
 BEGIN
-UPDATE dbo.Maquinas
-SET	Nombre =@Nombre,
-	Descripcion = @Descripcion,	
-	Ubicacion = @Ubicacion,
-	Estado = @Estado        
-WHERE MaquinaID =@MaquinaID
+UPDate dbo.Maquinas
+set		Nombre =@Nombre,
+		Descripcion = @Descripcion,	
+		Ubicacion = @Ubicacion,
+		Estado = @Estado         
+	where MaquinaID =@MaquinaID
 END;
 GO
 
+----------- INGRESAR SP ConsultarMaquina -----------
+
 ----------------------------- Empleados e Instructores ----------------------------
-CREATE PROCEDURE AgregarEmpleado
+CREATE PROCEDURE [dbo].[sp_GetEmpleados]
+AS
+BEGIN
+    SELECT 
+        e.EmpleadoID,
+        e.UsuarioID,
+        e.Puesto,
+        e.FechaContratacion,
+        u.Nombre,
+        u.Apellido,
+        u.Email,
+        u.Telefono,
+        u.Direccion
+    FROM Empleados e
+    INNER JOIN Usuarios u ON e.UsuarioID = u.UsuarioID;
+END;
+GO
+	
+CREATE PROCEDURE [dbo].[AgregarEmpleado]
     @UsuarioID INT,
     @Puesto NVARCHAR(50),
     @FechaContratacion DATE
@@ -270,8 +292,133 @@ BEGIN
     SELECT SCOPE_IDENTITY() AS NuevoEmpleadoID;
 END;
 GO
-	
-CREATE PROCEDURE AgregarInstructor
+
+CREATE PROCEDURE [dbo].[ModificarEmpleado]
+    @EmpleadoID INT,
+    @Puesto NVARCHAR(50),
+    @FechaContratacion DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Empleados
+    SET 
+        Puesto = @Puesto,
+        FechaContratacion = @FechaContratacion
+    WHERE 
+        EmpleadoID = @EmpleadoID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ObtenerUsuariosParaEmpleados]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT UsuarioID, Nombre, Apellido 
+    FROM Usuarios 
+    WHERE RolID = 4;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ObtenerEmpleadoPorID]
+    @EmpleadoID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT e.EmpleadoID, e.UsuarioID, e.Puesto, e.FechaContratacion,
+           u.Nombre, u.Apellido, u.Email, u.Telefono
+    FROM Empleados e
+    INNER JOIN Usuarios u ON e.UsuarioID = u.UsuarioID
+    WHERE e.EmpleadoID = @EmpleadoID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ObtenerInstructores]
+AS
+BEGIN
+    SELECT 
+        i.InstructorID, 
+        i.UsuarioID, 
+        u.Nombre, 
+        u.Apellido, 
+        u.Email, 
+        u.Telefono, 
+        i.Especialidad, 
+        i.ExperienciaAnios
+    FROM Instructores i
+    INNER JOIN Usuarios u ON i.UsuarioID = u.UsuarioID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ModificarInstructor]
+    @InstructorID INT,
+    @Especialidad NVARCHAR(100),
+    @ExperienciaAnios INT
+AS
+BEGIN
+    UPDATE Instructores
+    SET Especialidad = @Especialidad,
+        ExperienciaAnios = @ExperienciaAnios
+    WHERE InstructorID = @InstructorID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ObtenerInstructores]
+AS
+BEGIN
+    SELECT 
+        i.InstructorID, 
+        i.UsuarioID, 
+        u.Nombre, 
+        u.Apellido, 
+        u.Email, 
+        u.Telefono, 
+        i.Especialidad, 
+        i.ExperienciaAnios
+    FROM Instructores i
+    INNER JOIN Usuarios u ON i.UsuarioID = u.UsuarioID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ObtenerInstructoresConDetalle]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        i.InstructorID,
+        i.UsuarioID,
+        i.Especialidad,
+        i.ExperienciaAnios,
+        u.Nombre,
+        u.Apellido,
+        u.Email,
+        u.Telefono
+    FROM 
+        Instructores i
+    INNER JOIN 
+        Usuarios u ON i.UsuarioID = u.UsuarioID;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[ObtenerUsuariosRol2]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        UsuarioID,
+        Nombre,
+        Apellido
+    FROM 
+        Usuarios
+    WHERE 
+        RolID = 2;
+END;
+GO
+
+CREATE PROCEDURE [dbo].[AgregarInstructor]
     @UsuarioID INT,
     @Especialidad NVARCHAR(100),
     @ExperienciaAnios INT
@@ -289,79 +436,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE ModificarEmpleado
-    @EmpleadoID INT,
-    @Puesto NVARCHAR(50),
-    @FechaContratacion DATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    UPDATE Empleados
-    SET 
-        Puesto = @Puesto,
-        FechaContratacion = @FechaContratacion
-    WHERE 
-        EmpleadoID = @EmpleadoID;
-END;
-GO
-
-CREATE PROCEDURE ModificarInstructor
-    @InstructorID INT,
-    @Especialidad NVARCHAR(100),
-    @ExperienciaAnios INT
-AS
-BEGIN
-    UPDATE Instructores
-    SET Especialidad = @Especialidad,
-        ExperienciaAnios = @ExperienciaAnios
-    WHERE InstructorID = @InstructorID;
-END;
-GO
-
-CREATE PROCEDURE ObtenerEmpleadoPorID
-    @EmpleadoID INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT e.EmpleadoID, e.UsuarioID, e.Puesto, e.FechaContratacion,
-           u.Nombre, u.Apellido, u.Email, u.Telefono
-    FROM Empleados e
-    INNER JOIN Usuarios u ON e.UsuarioID = u.UsuarioID
-    WHERE e.EmpleadoID = @EmpleadoID;
-END;
-GO
-
-CREATE PROCEDURE ObtenerEmpleados
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT e.EmpleadoID, e.UsuarioID, e.Puesto, e.FechaContratacion, 
-           u.Nombre, u.Apellido, u.Email, u.Telefono
-    FROM Empleados e
-    INNER JOIN Usuarios u ON e.UsuarioID = u.UsuarioID;
-END;
-GO
-
-CREATE PROCEDURE ObtenerInstructores
-AS
-BEGIN
-    SELECT 
-        i.InstructorID, 
-        i.UsuarioID, 
-        u.Nombre, 
-        u.Apellido, 
-        u.Email, 
-        u.Telefono, 
-        i.Especialidad, 
-        i.ExperienciaAnios
-    FROM Instructores i
-    INNER JOIN Usuarios u ON i.UsuarioID = u.UsuarioID;
-END;
-GO
-
-CREATE PROCEDURE ObtenerInstructorPorID
+CREATE PROCEDURE [dbo].[ObtenerInstructorPorID]
     @InstructorID INT
 AS
 BEGIN
@@ -385,52 +460,9 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE ObtenerUsuariosParaEmpleados
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT UsuarioID, Nombre, Apellido 
-    FROM Usuarios 
-    WHERE RolID = 4;
-END;
-GO
-
-CREATE PROCEDURE ObtenerUsuariosRol2
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT 
-        UsuarioID,
-        Nombre,
-        Apellido
-    FROM 
-        Usuarios
-    WHERE 
-        RolID = 2;
-END;
-GO
-
-CREATE PROCEDURE sp_ActualizarEmpleado
-    @EmpleadoID INT,
-    @UsuarioID INT,
-    @Puesto NVARCHAR(50),
-    @FechaContratacion DATE
-AS
-BEGIN
-    UPDATE Empleados
-    SET 
-        UsuarioID = @UsuarioID,
-        Puesto = @Puesto,
-        FechaContratacion = @FechaContratacion
-    WHERE EmpleadoID = @EmpleadoID;
-END;
-GO
-
 ----------------------------- Usuarios ----------------------------
 
-CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ----
+CREATE PROCEDURE [dbo].[UsuarioC] 
     @Nombre NVARCHAR(50),
     @Apellido NVARCHAR(50),
     @Email NVARCHAR(100),
@@ -440,8 +472,8 @@ CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ----
     @RolID INT
 AS
 BEGIN
-    INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
-    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
+    INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID, Activo)
+    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID, 1);
 
 	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
 
@@ -473,14 +505,15 @@ BEGIN
 END;
 GO
 	
-CREATE PROCEDURE [dbo].[UsuarioU] ---- UPDATE ----
+CREATE PROCEDURE [dbo].[UsuarioU]
     @UsuarioID INT,
     @Nombre NVARCHAR(50),
     @Apellido NVARCHAR(50),
     @Email NVARCHAR(100),
     @Telefono NVARCHAR(20),
     @Direccion NVARCHAR(255),
-    @RolID INT
+    @RolID INT,
+	@Activo BIT = 1
 AS
 BEGIN
     UPDATE Usuarios
@@ -489,22 +522,45 @@ BEGIN
         Email = @Email,
         Telefono = @Telefono,
         Direccion = @Direccion,
-        RolID = @RolID
+        RolID = @RolID,
+		Activo = @Activo
     WHERE UsuarioID = @UsuarioID;
+
+	IF @RolID = 3 -- Cliente
+    BEGIN
+		INSERT INTO [dbo].[Clientes] (UsuarioID, MembresiaActiva, FechaInicioMembresia, FechaFinMembresia)
+		VALUES (@UsuarioId, 0, GETDATE(), NULL);
+		 DELETE FROM Instructores WHERE UsuarioID = @UsuarioID;
+		 DELETE FROM Empleados WHERE UsuarioID = @UsuarioID;
+    END
+	ELSE IF @RolID = 2 -- Instructor
+    BEGIN
+        INSERT INTO [dbo].[Instructores](UsuarioID, Especialidad, ExperienciaAnios)
+		VALUES (@UsuarioId, NULL, NULL); 
+	DELETE FROM Clientes WHERE UsuarioID = @UsuarioID;
+     DELETE FROM Empleados WHERE UsuarioID = @UsuarioID;
+    END
+    ELSE IF @RolID = 4 -- Empleado
+	BEGIN
+        INSERT INTO [dbo].[Empleados] (UsuarioID, Puesto, FechaContratacion)
+		VALUES (@UsuarioId, NULL, GETDATE());
+	DELETE FROM Instructores WHERE UsuarioID = @UsuarioID;
+	DELETE FROM Clientes WHERE UsuarioID = @UsuarioID;
+	END;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[UsuarioR] ---- READ ---- 
+CREATE PROCEDURE [dbo].[UsuarioR]
     @UsuarioID INT
 AS
 BEGIN
-    SELECT UsuarioID, Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID
+    SELECT UsuarioID, Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID, Activo
     FROM Usuarios
     WHERE UsuarioID = @UsuarioID;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[UsuarioD] ---- DELETE -----
+CREATE PROCEDURE [dbo].[UsuarioD]
     @UsuarioID INT
 AS
 BEGIN
@@ -520,17 +576,17 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UsuariosLista ---- LISTA USUARIOS ----
+CREATE PROCEDURE [dbo].[UsuariosLista]
 AS
 BEGIN
-    SELECT UsuarioID, Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro, RolID
+    SELECT UsuarioID, Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro, RolID, Activo
     FROM Usuarios;
 END;
 GO
 
 -------------------------- SP ROLES --------------------------
 
-CREATE PROCEDURE [dbo].[RolesLista] ---- LISTA ROLES ----
+CREATE PROCEDURE [dbo].[RolesLista]
 AS
 BEGIN
     SELECT RolID, NombreRol
@@ -539,7 +595,7 @@ END;
 GO
 -------------------------- SP LOGEO --------------------------
 
-CREATE PROCEDURE [dbo].[Registro] ---- REGISTRO -----
+CREATE PROCEDURE [dbo].[Registro]
 	@Nombre NVARCHAR(50),
 	@Apellido NVARCHAR(50),
 	@Email NVARCHAR(100),
@@ -549,8 +605,8 @@ CREATE PROCEDURE [dbo].[Registro] ---- REGISTRO -----
 	@RolID INT
 AS
 BEGIN
-	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
-    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
+	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID, Activo)
+    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID, 1);
 
 	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
 
@@ -562,21 +618,23 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [dbo].[InicioSesion] ---- INICIO SESION ----
+CREATE PROCEDURE [dbo].[InicioSesion]
 	@Email NVARCHAR(100),
     @Contrasena NVARCHAR(100)
 AS
 BEGIN
 	SELECT UsuarioID, Nombre, Apellido, RolID
     FROM Usuarios
-    WHERE Email = @Email AND Contrasena = @Contrasena;
+    WHERE Email = @Email 
+	AND Contrasena = @Contrasena
+	AND Activo = 1;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[RegistrarRecuperar] ---- CODIGO RECUPERACION ----
-    @Email NVARCHAR(100), 
-    @Token NVARCHAR(255), 
-    @FechaExpiracion DATETIME  
+CREATE PROCEDURE [dbo].[RegistrarRecuperar]
+    @Email NVARCHAR(100),           
+    @Token NVARCHAR(255),           
+    @FechaExpiracion DATETIME       
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -597,18 +655,17 @@ BEGIN
     END
     ELSE
     BEGIN
-        RETURN -1;
+        RETURN -1; 
     END
 END;
 GO
 
-CREATE PROCEDURE [dbo].[RegistrarRestablecer] ---- CAMBIAR CONTRASENA ----
-    @Token NVARCHAR(255),     
+CREATE PROCEDURE [dbo].[RegistrarRestablecer]
+    @Token NVARCHAR(255),        
     @NuevaContrasena NVARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
-
     DECLARE @UsuarioID INT;
     SELECT @UsuarioID = UsuarioID FROM RecuperarTokens WHERE Token = @Token AND FechaExpiracion > GETDATE();
 
@@ -624,14 +681,14 @@ BEGIN
     END
     ELSE
     BEGIN
-        RETURN -1;
+        RETURN -1; 
     END
 END;
 GO
 
 -----------------------------  Reservas-----------------------------
 
-CREATE PROCEDURE sp_ObtenerReservas
+CREATE PROCEDURE [dbo].[sp_ObtenerReservas]
 AS
 BEGIN
     SELECT r.ReservaID, r.UsuarioID, r.FechaReserva, r.HoraInicio, r.HoraFin, r.Estado, r.MaquinaID, 
@@ -642,7 +699,7 @@ BEGIN
 END;
 GO
 
-Create PROCEDURE sp_InsertarReserva
+CREATE PROCEDURE [dbo].[sp_InsertarReserva]
     @UsuarioID INT,
     @FechaReserva DATE,
     @HoraInicio TIME,
@@ -655,7 +712,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_EliminarReserva
+CREATE PROCEDURE [dbo].[sp_EliminarReserva]
     @ReservaID INT
 AS
 BEGIN
@@ -663,7 +720,7 @@ BEGIN
 END;
 GO
 
-Create PROCEDURE sp_ActualizarEstadoReserva
+CREATE PROCEDURE [dbo].[sp_ActualizarEstadoReserva]
     @ReservaID INT
 AS
 BEGIN
@@ -674,7 +731,7 @@ END;
 GO
 -----------------------------  Pagos-----------------------------
 
-Create PROCEDURE sp_ObtenerPagos
+Create PROCEDURE [dbo].[sp_ObtenerPagos]
 AS
 BEGIN
     SELECT u.Nombre AS UsuarioNombre, p.PagoID, p.UsuarioID, p.Monto, p.FechaPago, p.MetodoPago
@@ -684,7 +741,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_InsertarPago
+CREATE PROCEDURE [dbo].[sp_InsertarPago]
     @UsuarioID INT,
     @Monto DECIMAL(10, 2),
     @FechaPago DATE,
@@ -696,7 +753,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_EliminarPago
+CREATE PROCEDURE [dbo].[sp_EliminarPago]
     @PagoID INT
 AS
 BEGIN
@@ -706,7 +763,7 @@ GO
 
 -----------------------------Ventas-----------------------------
 
-CREATE PROCEDURE sp_ObtenerVentas
+CREATE PROCEDURE [dbo].[sp_ObtenerVentas]
 AS
 BEGIN
     SELECT v.VentaID, v.UsuarioID, v.ProductoID, v.Cantidad, v.FechaVenta, v.Total, 
@@ -717,7 +774,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_InsertarVenta
+CREATE PROCEDURE [dbo].[sp_InsertarVenta]
     @UsuarioID INT,
     @ProductoID INT,
     @Cantidad INT,
@@ -730,7 +787,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_EliminarVentas
+CREATE PROCEDURE [dbo].[sp_EliminarVentas]
     @VentaID INT
 AS
 BEGIN
@@ -738,7 +795,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE sp_ObtenerProductos
+CREATE PROCEDURE [dbo].[sp_ObtenerProductos]
 AS
 BEGIN
     -- Selecciona los productos disponibles en el inventario
@@ -756,7 +813,7 @@ END;
 GO
 ----------------------------- Carrito -----------------------------
 
-CREATE PROCEDURE [dbo].[CarritoAgregar] ---- AGREGAR AL CARRITO ----
+CREATE PROCEDURE [dbo].[CarritoAgregar]
     @UsuarioID INT,
     @ProductoID INT,
     @Cantidad INT
@@ -766,6 +823,7 @@ BEGIN
     BEGIN
         INSERT INTO Carrito (UsuarioID, ProductoID, Cantidad, FechaAgregado)
         VALUES (@UsuarioID, @ProductoID, @Cantidad, GETDATE());
+        RETURN 1;
     END
     ELSE
     BEGIN
@@ -774,11 +832,12 @@ BEGIN
             FechaAgregado = GETDATE()
         WHERE UsuarioID = @UsuarioID 
           AND ProductoID = @ProductoID;
+        RETURN 2; 
     END
 END;
 GO
 
-CREATE PROCEDURE [dbo].[CarritoEliminar] ---- ELIMINAR DEL CARRITO ----
+CREATE PROCEDURE [dbo].[CarritoEliminar]
     @CarritoID INT
 AS
 BEGIN
@@ -793,7 +852,6 @@ GO
 UPDATE Usuarios
 SET RolID = 1
 WHERE UsuarioID = 1;
-
 
 
 
