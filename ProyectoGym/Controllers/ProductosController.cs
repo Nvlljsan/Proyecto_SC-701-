@@ -57,7 +57,7 @@ namespace ProyectoGym.Controllers
             {
                 ext = Path.GetExtension(Path.GetFileName(Imagen.FileName));
                 folder = Path.Combine(_env.ContentRootPath, "wwwroot\\products");
-                model.Imagen = "/products/";
+                model.Imagen = "/products/" + Imagen.FileName;
 
                 if (ext.ToLower() != ".png")
                 {

@@ -89,7 +89,7 @@
                             @{
                                 if (RoleName == "1")
                                 {
-                                    <a class="nav-link" href="@Url.Action("Index","Home")">
+                                    <a class="nav-link" href="@Url.Action("Inicio","Home")">
                                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                         Dashboard
                                     </a>
@@ -141,19 +141,6 @@
                                         </nav>
                                     </div>
 
-                                    <!-- Sección Pagos -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                        Pagos
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
-                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
-                                            <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
-                                        </nav>
-                                    </div>
 
                                     <!-- Sección Reservas -->
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReservas" aria-expanded="false" aria-controls="collapseReservas">
@@ -215,20 +202,6 @@
                                         </nav>
                                     </div>
 
-                                    <!-- Sección Pagos -->
-                                    <!-- LOS INSTRUCTORES PUEDEN REGISTRAR Y CONSULTAR PAGOS RELACIONADOS A EL -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                        Pagos
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
-                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
-                                            <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
-                                        </nav>
-                                    </div>
 
                                     <!-- Sección Reservas -->
                                     <!-- LOS INSTRUCTORES PUEDEN REGISTRAR Y CONSULTAR RESERVAS RELACIONADAS A EL -->
@@ -296,19 +269,7 @@
                                     <!-- Sección Maquinas -->
                                     <!-- LOS CLIENTES PODRIAN VER LAS MAQUINAS PERO COMO CATALOGO EN LUGAR DE VER UNA LISTA DE ESTAS -->
 
-                                    <!-- Sección Pagos -->
-                                    <!-- LOS CLIENTES PUEDEN CONSULTAR PAGOS PERO SOLO DE ELLOS MISMOS -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                        Pagos
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
-                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
-                                        </nav>
-                                    </div>
+                             
 
                                     <!-- Sección Reservas -->
                                     <!-- LOS CLIENTES PUEDEN CONSULTAR RESERVAS PERO SOLO DE ELLOS MISMOS -->
@@ -375,20 +336,7 @@
                                         </nav>
                                     </div>
 
-                                    <!-- Sección Pagos -->
-                                    <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LOS PAGOS -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePagos" aria-expanded="false" aria-controls="collapsePagos">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                        Pagos
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapsePagos" aria-labelledby="headingPagos" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPagos">
-                                            <a class="nav-link" href=@Url.Action("ConsultarPagos","Pagos")>Consultar Pagos</a>
-                                            <a class="nav-link" href="@Url.Action("RegistrarPago","Pagos")">Registrar Pago</a>
-                                        </nav>
-                                    </div>
+                                    
 
                                     <!-- Sección Reservas -->
                                     <!-- LOS EMPLEADOS PUEDEN TENER MANEJO TOTAL DE LAS RESERVAS -->
