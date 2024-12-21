@@ -29,6 +29,7 @@
 </table>
 
 <form asp-action="SimularPago" asp-controller="Carrito" method="post">
+    <input type="hidden" name="usuarioID" value="@ViewBag.UsuarioID" />
     <button type="submit" class="btn btn-success">Pagar</button>
 </form>
 

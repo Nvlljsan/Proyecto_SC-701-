@@ -118,18 +118,24 @@ namespace ProyectoGymAPI.Controllers
         }
         [HttpPost]
         [Route("SimularPago")]
-        public IActionResult SimularPago(int usuarioID)
+        public IActionResult SimularPago([FromBody] Usuarios usuario)
         {
+            if (usuario == null || usuario.UsuarioID <= 0)
+            {
+                return BadRequest("El UsuarioID es inválido.");
+            }
+
+            Console.WriteLine($"UsuarioID recibido en la API: {usuario.UsuarioID}");
+
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
                 try
                 {
-                    // Llama al procedimiento almacenado
-                    var result = context.Execute("CarritoSimularPago", new { UsuarioID = usuarioID }, commandType: CommandType.StoredProcedure);
+                    var result = context.Execute("CarritoSimularPago", new { UsuarioID = usuario.UsuarioID }, commandType: CommandType.StoredProcedure);
 
                     respuesta.Codigo = 0;
-                    respuesta.Mensaje = "Pago ejecutado. El carrito ha sido vaciado.";
+                    respuesta.Mensaje = "Pago simulado correctamente. El carrito ha sido vaciado, y las ventas e historial registrados.";
                 }
                 catch (SqlException ex)
                 {
@@ -141,6 +147,7 @@ namespace ProyectoGymAPI.Controllers
                 return Ok(respuesta);
             }
         }
+
 
         [HttpGet]
         [Route("HistorialCompras/{usuarioID}")]

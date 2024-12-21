@@ -118,26 +118,37 @@ public IActionResult Eliminar(int carritoID, int usuarioID)
 }
 
         [HttpPost]
-        public async Task<IActionResult> SimularPago(int usuarioID)
+        public async Task<IActionResult> SimularPago()
         {
             using (var client = _http.CreateClient())
             {
-                
-                var url = _conf.GetSection("Variables:UrlApi").Value + "Carrito/SimularPago";
+                var usuarioID = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
-                var response = await client.PostAsJsonAsync(url, new { UsuarioID = usuarioID });
+                var url = $"{_conf.GetSection("Variables:UrlApi").Value}Carrito/SimularPago";
+
+                // Usa el modelo existente
+                var usuario = new Usuarios { UsuarioID = usuarioID };
+
+                Console.WriteLine($"Datos enviados a la API: {JsonSerializer.Serialize(usuario)}");
+
+                var response = await client.PostAsJsonAsync(url, usuario);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<Respuesta>();
                     ViewBag.Mensaje = result?.Mensaje ?? "Pago realizado correctamente.";
-                    return RedirectToAction("HistorialCompras", new { usuarioID });
+                    return RedirectToAction("HistorialCompras");
                 }
 
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error al procesar el pago: {errorContent}");
                 ViewBag.Mensaje = "Error al procesar el pago.";
-                return RedirectToAction("CarritoLista", new { usuarioID });
+                return RedirectToAction("CarritoLista");
             }
         }
 
+
     }
+
 }
+
