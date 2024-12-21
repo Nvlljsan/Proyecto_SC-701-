@@ -11,12 +11,14 @@ namespace ProyectoGym.Controllers
         private readonly IHttpClientFactory _http;
         private readonly IConfiguration _conf;
         private readonly IMetodosComunes _comunes;
+        private readonly IHostEnvironment _env;
 
-        public ProductosController(IHttpClientFactory http, IConfiguration conf, IMetodosComunes comunes)
+        public ProductosController(IHttpClientFactory http, IConfiguration conf, IMetodosComunes comunes, IHostEnvironment env)
         {
             _http = http;
             _conf = conf;
             _comunes = comunes;
+            _env = env;
         }
 
         [HttpGet]
@@ -46,8 +48,23 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProductoC(Productos model) //FUNCIONAL 100%
+        public IActionResult ProductoC(IFormFile ImagenProducto, Productos model) //FUNCIONAL 100%
         {
+            var ext = string.Empty;
+            var folder = string.Empty;
+
+            if (ImagenProducto != null)
+            {
+                ext = Path.GetExtension(Path.GetFileName(ImagenProducto.FileName));
+                folder = Path.Combine(_env.ContentRootPath, "wwwroot\\products");
+                model.Imagen = "/products/";
+
+                if (ext.ToLower() != ".png")
+                {
+                    ViewBag.Mensaje = "La imagen debe ser .png";
+                    return View();
+                }
+            }
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Productos/ProductoC";
@@ -59,6 +76,15 @@ namespace ProyectoGym.Controllers
 
                 if (result != null && result.Codigo == 0)
                 {
+                    if (ImagenProducto != null)
+                    {
+                        var archivo = Path.Combine(folder, result.Mensaje + ext);
+                        using (Stream fs = new FileStream(archivo, FileMode.Create))
+                        {
+                            ImagenProducto.CopyTo(fs);
+                        }
+                    }
+
                     return RedirectToAction("ProductosLista", "Productos");
                 }
                 else
