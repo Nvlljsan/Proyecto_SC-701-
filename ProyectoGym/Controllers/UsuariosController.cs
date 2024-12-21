@@ -54,6 +54,7 @@ namespace ProyectoGym.Controllers
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Usuarios>().Result;
+                ViewBag.verificarRol = result.RolID == 1;
                 return View(result);
             }
         }
