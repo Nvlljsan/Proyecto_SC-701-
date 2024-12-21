@@ -34,7 +34,7 @@
                                     <td>@venta.FechaVenta.ToShortDateString()</td>
                                     <td class="text-center">
                                         <form asp-action="EliminarVenta" asp-controller="Ventas" method="post" class="d-inline">
-                                            <input type="hidden" name="VentaID" value="@venta.VentaID" />
+                                            <input type="hidden" name="id" value="@venta.VentaID" />
                                             <button type="submit" class="btn btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i> Eliminar
                                             </button>

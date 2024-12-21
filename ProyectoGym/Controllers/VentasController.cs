@@ -80,6 +80,7 @@ namespace ProyectoGym.Controllers
         }
 
         // GET: Eliminar Venta
+        [HttpPost]
         public async Task<IActionResult> EliminarVenta(int id)
         {
             try
