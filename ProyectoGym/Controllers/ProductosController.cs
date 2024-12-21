@@ -48,14 +48,14 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProductoC(IFormFile ImagenProducto, Productos model) //FUNCIONAL 100%
+        public IActionResult ProductoC(IFormFile Imagen, Productos model) //FUNCIONAL 100%
         {
             var ext = string.Empty;
             var folder = string.Empty;
 
-            if (ImagenProducto != null)
+            if (Imagen != null)
             {
-                ext = Path.GetExtension(Path.GetFileName(ImagenProducto.FileName));
+                ext = Path.GetExtension(Path.GetFileName(Imagen.FileName));
                 folder = Path.Combine(_env.ContentRootPath, "wwwroot\\products");
                 model.Imagen = "/products/";
 
@@ -76,12 +76,12 @@ namespace ProyectoGym.Controllers
 
                 if (result != null && result.Codigo == 0)
                 {
-                    if (ImagenProducto != null)
+                    if (Imagen != null)
                     {
                         var archivo = Path.Combine(folder, result.Mensaje + ext);
                         using (Stream fs = new FileStream(archivo, FileMode.Create))
                         {
-                            ImagenProducto.CopyTo(fs);
+                            Imagen.CopyTo(fs);
                         }
                     }
 
