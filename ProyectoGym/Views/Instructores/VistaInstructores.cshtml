@@ -1,0 +1,50 @@
+﻿@model List<ProyectoGym.Models.Instructores>
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header">
+            <h2 class="text-center font-weight-light my-4">Gestión de Instructores</h2>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Especialidad</th>
+                            <th>Años de Experiencia</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var instructor in Model)
+
+                        {
+                            <tr>
+                                <td>@instructor.Nombre</td>
+                                <td>@instructor.Apellido</td>
+                                <td>@instructor.Email</td>
+                                <td>@instructor.Telefono</td>
+                                <td>@instructor.Especialidad</td>
+                                <td>@instructor.ExperienciaAnios</td>
+                                <td>
+                                    <a asp-action="ModificarInstructor" asp-route-id="@instructor.InstructorID" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Modificar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-center">No se encontraron instructores registrados.</p>
+            }
+        </div>
+    </div>
+</div>

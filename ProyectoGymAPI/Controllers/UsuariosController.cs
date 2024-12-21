@@ -6,6 +6,7 @@ using ProyectoGymAPI.Models;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace ProyectoGymAPI.Controllers
 {
@@ -24,7 +25,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("UsuariosLista")]
-        public IActionResult UsuariosLista()
+        public IActionResult UsuariosLista() //FUNCIONA 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -45,20 +46,40 @@ namespace ProyectoGymAPI.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("UsuarioC")]
-        public IActionResult UsuarioC(Usuarios model)
+        public IActionResult UsuarioC(Usuarios model) //FUNCIONAL 100%
         {
+            if (model.RolID == 0 || model.RolID == null)
+            {
+                model.RolID = 3;
+            }
+
+            model.Contrasena = Encrypt(model.Contrasena);
+
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var respuesta = new Respuesta();
+                var correoExistente = context.QueryFirstOrDefault<Usuarios>("UsuariosInfo", new { model.Email, model.Telefono });
 
-                if (model.RolID == 0) //Esto es para hacer que cliente sea default
+                if (correoExistente != null)
                 {
-                    model.RolID = 3;  // Cliente
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El correo o telefono ya está registrado. Por favor, use uno diferente."
+                    });
                 }
 
+                if (model.Telefono.Length != 8 || !model.Telefono.All(char.IsDigit))
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El número de teléfono debe contener exactamente 8 dígitos y solo números."
+                    });
+                }
+
+                var respuesta = new Respuesta();
                 var result = context.Execute("UsuarioC", new { model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
 
                 if (result > 0)
@@ -78,7 +99,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpGet]
         [Route("UsuarioR")]
-        public IActionResult UsuarioR(int usuarioID)
+        public IActionResult UsuarioR(int usuarioID) //FUNCIONAL 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -97,13 +118,21 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpPut]
         [Route("UsuarioU")]
-        public IActionResult UsuarioU(Usuarios model)
+        public IActionResult UsuarioU(Usuarios model) //FUNCIONA 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
-                var respuesta = new Respuesta();
+                if (model.Telefono.Length != 8 || !model.Telefono.All(char.IsDigit))
+                {
+                    return BadRequest(new
+                    {
+                        Codigo = -1,
+                        Mensaje = "El número de teléfono debe contener exactamente 8 dígitos y solo números."
+                    });
+                }
 
-                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Contrasena, model.Telefono, model.Direccion, model.RolID });
+                var respuesta = new Respuesta();
+                var result = context.Execute("UsuarioU", new { model.UsuarioID, model.Nombre, model.Apellido, model.Email, model.Telefono, model.Direccion, model.RolID, model.Activo });
 
                 if (result > 0)
                 {
@@ -121,7 +150,7 @@ namespace ProyectoGymAPI.Controllers
 
         [HttpDelete]
         [Route("UsuarioD")]
-        public IActionResult UsuarioD(int usuarioID)
+        public IActionResult UsuarioD(int usuarioID) //FUNCIONA 100%
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -142,10 +171,12 @@ namespace ProyectoGymAPI.Controllers
             }
         }
 
+        //PENDIENTE UN DESACTIVAR USUARIO
+
         //======================================================[Metodos Auxiliares]=====================================================================
         [HttpGet]
         [Route("RolesLista")]
-        public IActionResult RolesLista()
+        public IActionResult RolesLista() //FUNCIONAL, LLAMAR LA LISTA
         {
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
@@ -165,6 +196,35 @@ namespace ProyectoGymAPI.Controllers
 
                 return Ok(respuesta);
             }
+        }
+
+        private string Encrypt(string texto) //FUNCIONAL 100%
+        {
+            byte[] iv = new byte[16];
+            byte[] array;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(_conf.GetSection("Variables:Llave").Value!);
+                aes.IV = iv;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                        {
+                            streamWriter.Write(texto);
+                        }
+
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            return Convert.ToBase64String(array);
         }
     }
 }

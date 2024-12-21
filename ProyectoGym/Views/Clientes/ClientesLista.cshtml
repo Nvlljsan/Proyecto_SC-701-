@@ -1,71 +1,65 @@
 ﻿@model List<ProyectoGym.Models.Clientes>
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Lista de Clientes</h5>
-
-        <div class="table-responsive">
-            <table id="example" class="table text-nowrap align-middle mb-0">
-                <thead>
-                    <tr class="border-2 border-bottom border-primary border-0">
-                        <th># de Cliente</th>
-                        <th># de Usuario</th>
-                        <th>Nombre</th>
-                        <th>FechaInicioMembresia</th>
-                        <th>FechaFinMembresia</th>
-                        <th>MembresiaActiva</th>
-                        <th>Configuraciones</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    @foreach (var cliente in Model)
-                    {
-                        <tr>
-                            <td>@cliente.ClienteID</td>
-                            <td>@cliente.UsuarioID</td>
-                            <td>@cliente.Nombre</td>
-                            <td>@cliente.FechaInicioMembresia?.ToString("dd/MM/yyyy")</td>
-                            <td>@cliente.FechaFinMembresia?.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                @if (cliente.FechaFinMembresia >= DateTime.Today && cliente.MembresiaActiva == true)
-                                {
-                                    <i class="fa fa-check" style="font-size:1.6em;"></i> 
-                                    
-
-                                }
-                                else
-                                {
-                                    <i class="fa fa-close" style="font-size:1.6em;"></i>
-                                
-                                }
-
-
-                            <td>
-                                <div class="d-flex">
-                                    <a href="@Url.Action("ClienteU", "Clientes", new { ClienteID = cliente.ClienteID})" class="btn btn-primary">Editar</a>
-                                    
-                                </div>
-
-                                <a href="" class="btn">
-                                    <i class="fa fa-edit" style="font-size:1.6em;"></i>
-                                </a>
-                                <a href="@Url.Action("ClienteInactivo","Clientes", new { ClienteID = @cliente.ClienteID })"><i class="fa fa-trash-o fa-2x"></i></a>
-                             
-                            </td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header">
+            <h2 class="text-center font-weight-light my-4">Lista de Clientes</h2>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th># de Cliente</th>
+                                <th># de Usuario</th>
+                                <th>Nombre</th>
+                                <th>Fecha Inicio Membresía</th>
+                                <th>Fecha Fin Membresía</th>
+                                <th>Membresía Activa</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cliente in Model)
+                            {
+                                <tr>
+                                    <td>@cliente.ClienteID</td>
+                                    <td>@cliente.UsuarioID</td>
+                                    <td>@cliente.Nombre</td>
+                                    <td>@cliente.FechaInicioMembresia?.ToString("dd/MM/yyyy")</td>
+                                    <td>@cliente.FechaFinMembresia?.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-center">
+                                        @if (cliente.FechaFinMembresia >= DateTime.Today && cliente.MembresiaActiva == true)
+                                        {
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times-circle text-danger"></i>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="@Url.Action("ClienteU", "Clientes", new { ClienteID = cliente.ClienteID })" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            <a href="@Url.Action("ClienteInactivo", "Clientes", new { ClienteID = cliente.ClienteID })" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash-alt"></i> Inactivar
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-center text-muted">No se encontraron clientes registrados.</p>
+            }
         </div>
     </div>
 </div>
-
-
-
-
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}

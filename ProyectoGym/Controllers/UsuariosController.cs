@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoGym.Models;
 using ProyectoGym.Services;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace ProyectoGym.Controllers
@@ -21,7 +24,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult UsuariosLista()
+        public IActionResult UsuariosLista() //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -40,10 +43,24 @@ namespace ProyectoGym.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Perfil() //FUNCIONAL 100%
+        {
+            using (var client = _http.CreateClient())
+            {
+                var userActual = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
+                var url = _conf.GetSection("Variables:UrlApi").Value + $"Usuarios/UsuarioR?UsuarioID={userActual}";
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Usuarios>().Result;
+                ViewBag.verificarRol = result.RolID == 1;
+                return View(result);
+            }
+        }
 
         [HttpGet]
-        public IActionResult UsuarioC()
+        public IActionResult UsuarioC() //FUNCIONAL 100%
         {
             var roles = RolesLista();
             if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
@@ -54,13 +71,12 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult UsuarioC(Usuarios model)
+        public IActionResult UsuarioC(Usuarios model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioC";
 
-                model.Contrasena = _comunes.Encrypt(model.Contrasena);
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PostAsync(url, datos).Result;
@@ -79,18 +95,37 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpGet]
-        public IActionResult UsuarioU(int UsuarioID)
+        public IActionResult UsuarioU(int UsuarioID) //FUNCIONAL 100%
         {
-            var roles = RolesLista();
-            if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
+            using (var client = _http.CreateClient())
             {
-                ViewBag.Roles = rolesLista;
+                var url = _conf.GetSection("Variables:UrlApi").Value + $"Usuarios/UsuarioR?usuarioID={UsuarioID}";
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Usuarios>().Result;
+
+                if (result != null)
+                {
+                    var roles = RolesLista();
+                    if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
+                    {
+                        ViewBag.Roles = rolesLista;
+                    }
+
+                    ViewBag.verificarRol = result.RolID == 1;
+
+                    return View(result); 
+                }
+                else
+                {
+                    ViewBag.Mensaje = "No se encontraron datos del usuario.";
+                    return RedirectToAction("UsuariosLista");
+                }
             }
-            return View();
         }
 
         [HttpPost]
-        public IActionResult UsuarioU(Usuarios model)
+        public IActionResult UsuarioU(Usuarios model) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -121,7 +156,7 @@ namespace ProyectoGym.Controllers
         }
 
         [HttpPost]
-        public IActionResult UsuarioD(int usuarioID)
+        public IActionResult UsuarioD(int usuarioID) //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
@@ -142,16 +177,97 @@ namespace ProyectoGym.Controllers
             }
         }
 
-       
+        [HttpGet]
+        public IActionResult EditarPerfil()
+        {
+            using (var client = _http.CreateClient())
+            {
+                var userActual = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+
+                var url = _conf.GetSection("Variables:UrlApi").Value + $"Usuarios/UsuarioR?UsuarioID={userActual}";
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Usuarios>().Result;
+
+                if (result != null)
+                {
+                    var roles = RolesLista();
+                    if (roles is JsonResult jsonResult && jsonResult.Value is List<Roles> rolesLista)
+                    {
+                        ViewBag.Roles = rolesLista;
+                    }
+
+                    ViewBag.Admin = result.RolID == 1;
+                    ViewBag.Instruct = result.RolID == 2;
+                    ViewBag.Client = result.RolID == 3;
+                    ViewBag.Emp = result.RolID == 4;
+
+                    return View(result);
+                }
+                else
+                {
+                    TempData["Mensaje"] = "No se encontraron datos del perfil.";
+                    return RedirectToAction("Perfil");
+                }
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditarPerfil(Usuarios model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioU";
+
+                var response = client.PutAsJsonAsync(url, model).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    TempData["Mensaje"] = "Perfil actualizado correctamente.";
+                    return RedirectToAction("Perfil");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result?.Mensaje ?? "Error al actualizar el perfil.";
+                    return View("PerfilEditar", model);
+                }
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EliminarPerfil(int UsuarioID) //FUNCIONAL 100%
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/UsuarioD?usuarioID=" + UsuarioID;
+
+                var response = client.DeleteAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    return RedirectToAction("InicioSesion", "Login");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result?.Mensaje ?? "Error desconocido";
+                    return RedirectToAction("Perfil");
+                }
+            }
+        }
+
+
 
 
 
         //=================================================[Metodos Auxiliares]=================================================
-        private IActionResult RolesLista()
+        private IActionResult RolesLista() //FUNCIONAL 100%
         {
             using (var client = _http.CreateClient())
             {
-                string url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Usuarios/RolesLista";
 
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;

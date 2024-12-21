@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProyectoGym.Models;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using QuestPDF.Fluent;
 using System.Text.Json;
 
 
@@ -126,6 +129,79 @@ namespace ProyectoGym.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GenerarReporteReservas()
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Reservas/ObtenerReservas";
+
+                var response = await client.GetAsync(url);
+                var reservas = await response.Content.ReadFromJsonAsync<List<ReservasViewModel>>();
+
+                if (reservas == null || !reservas.Any())
+                {
+                    return Content("No hay datos disponibles para generar el reporte.");
+                }
+
+                // Generar el PDF
+                var PdfDoc = Document.Create(container =>
+                {
+                    container.Page(page =>
+                    {
+                        page.Size(PageSizes.A4);
+                        page.Margin(2, Unit.Centimetre);
+                        page.DefaultTextStyle(TextStyle.Default.Size(12));
+                        page.Header().Text("Reporte de Reservas").Bold().FontSize(18).AlignCenter();
+                        page.Content().Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.ConstantColumn(50);  // ID
+                                columns.RelativeColumn(100); // Usuario
+                                columns.RelativeColumn(100); // Máquina
+                                columns.ConstantColumn(100); // Fecha
+                                columns.ConstantColumn(100); // Hora Inicio
+                                columns.ConstantColumn(100); // Hora Fin
+                            });
+
+                            table.Header(header =>
+                            {
+                                header.Cell().Text("ID").Bold();
+                                header.Cell().Text("Usuario").Bold();
+                                header.Cell().Text("Máquina").Bold();
+                                header.Cell().Text("Fecha").Bold();
+                                header.Cell().Text("Hora Inicio").Bold();
+                                header.Cell().Text("Hora Fin").Bold();
+                            });
+
+                            foreach (var reserva in reservas)
+                            {
+                                table.Cell().Text(reserva.ReservaID.ToString());
+                                table.Cell().Text(reserva.UsuarioNombre);
+                                table.Cell().Text(reserva.MaquinaNombre ?? "Sin asignar");
+                                table.Cell().Text(reserva.FechaReserva.ToString("dd/MM/yyyy"));
+                                table.Cell().Text(reserva.HoraInicio.ToString(@"hh\:mm"));
+                                table.Cell().Text(reserva.HoraFin.ToString(@"hh\:mm"));
+                            }
+                        });
+
+                        page.Footer().AlignCenter().Text(text =>
+                        {
+                            text.Span("Página ");
+                            text.CurrentPageNumber();
+                            text.Span(" de ");
+                            text.TotalPages();
+                        });
+                    });
+                });
+
+                var pdfBytes = PdfDoc.GeneratePdf();
+                return File(pdfBytes, "application/pdf", "Reporte_Reservas.pdf");
+            }
+        }
+
+
         private void ConsultarMaquinas()
         {
             using (var client = _http.CreateClient())
@@ -165,6 +241,7 @@ namespace ProyectoGym.Controllers
                 }
             }
         }
+
 
     }
 }

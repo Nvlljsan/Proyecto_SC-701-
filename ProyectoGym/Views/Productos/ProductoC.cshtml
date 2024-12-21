@@ -1,0 +1,70 @@
+﻿@model ProyectoGym.Models.Productos
+
+@{
+    ViewData["Title"] = "Crear Productos";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+</div>
+
+<body class="bg-primary d-flex align-items-center justify-content-center vh-100">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header">
+                                    <h3 class="text-center font-weight-light my-4">Registro</h3>
+                                    <a href="@Url.Action("ProductosLista","Productos")" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                        <img src="~/images/gym-logo.png" alt="" style="width: 100px; height: 100px; border-radius: 50%;">
+                                    </a>
+                                </div>
+                                <div class="card-body">
+
+                                    @if (ViewBag.Mensaje != null)
+                                    {
+                                        <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+                                    }
+
+                                    <form asp-action="ProductoC" asp-controller="Productos" enctype="multipart/form-data">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre</label>
+                                            <input type="text" asp-for="NombreProducto" class="form-control" required>
+                                            <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Descripcion</label>
+                                            <input type="text" asp-for="Descripcion" class="form-control" required>
+                                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Precio</label>
+                                            <input type="number" asp-for="Precio" class="form-control" min="0" required>
+                                            <span asp-validation-for="Precio" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Stock</label>
+                                            <input type="number" asp-for="Stock" class="form-control" min="0" required>
+                                            <span asp-validation-for="Stock" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Imagen</label>
+                                            <input type="file" class="form-control" accept="image/png" id="Imagen" name="Imagen">
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>

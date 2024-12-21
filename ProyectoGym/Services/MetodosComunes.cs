@@ -1,14 +1,24 @@
-﻿using System.Security.Cryptography;
+﻿using ProyectoGym.Models.ViewModels;
+using ProyectoGym.Models;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using static System.Net.WebRequestMethods;
+using System.Text.Json;
+
 
 namespace ProyectoGym.Services
 {
     public class MetodosComunes : IMetodosComunes
     {
         private readonly IConfiguration _conf;
-        public MetodosComunes(IConfiguration conf)
+        private readonly IHttpClientFactory _http;
+        private readonly IHttpContextAccessor _accesor;
+        public MetodosComunes(IConfiguration conf, IHttpClientFactory http, IHttpContextAccessor accesor)
         {
             _conf = conf;
+            _http = http;
+            _accesor = accesor;
         }
 
         public string Encrypt(string texto)
@@ -65,6 +75,28 @@ namespace ProyectoGym.Services
             }
         }
 
+        public List<CarritoViewModel> CarritoLista()
+        {
+           
+            var consecutivo = long.Parse(_accesor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString());
 
+            using (var client = _http.CreateClient())
+            {
+             
+                var url = _conf.GetSection("Variables:UrlApi").Value + "Carrito/ObtenerCarrito/" + consecutivo;
+
+
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    var datosContenido = JsonSerializer.Deserialize<List<CarritoViewModel>>((JsonElement)result.Contenido!);
+                    return datosContenido!.ToList();
+                }
+
+                return new List<CarritoViewModel>();
+            }
+        }
     }
 }

@@ -1,0 +1,64 @@
+﻿@model List<ProyectoGym.Models.Productos>
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h2 class="card-title text-center mb-0">Lista de Productos</h2>
+        </div>
+        <div class="card-body">
+            <div class="mb-3 text-end">
+                <a href="@Url.Action("ProductoC", "Productos")" class="btn btn-success">
+                    <i class="fa fa-plus"></i> Nuevo Producto
+                </a>
+            </div>
+            <div class="table-responsive">
+                @if (Model != null && Model.Any())
+                {
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th># de Producto</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Configuraciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var productos in Model)
+                            {
+                                <tr>
+                                    <td>@productos.ProductoID</td>
+                                    <td>@productos.NombreProducto</td>
+                                    <td>@productos.Descripcion</td>
+                                    <td>@productos.Precio.ToString("C")</td>
+                                    <td>@productos.Stock</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="@Url.Action("ProductoU", "Productos", new { ProductoID = productos.ProductoID })" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-pencil-alt"></i> Editar
+                                            </a>
+                                            <form method="post" action="@Url.Action("ProductoD", "Productos")" class="d-inline">
+                                                <input type="hidden" name="ProductoID" value="@productos.ProductoID" />
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fa fa-trash"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center" role="alert">
+                        No se encontraron productos registrados.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

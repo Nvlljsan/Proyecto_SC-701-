@@ -1,0 +1,81 @@
+﻿@model Usuarios
+
+<div class="container mt-4">
+    <h2>Perfil de Usuario</h2>
+
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Mensaje</div>
+    }
+    else
+    {
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-6 mb-4 mb-lg-0">
+                    <div class="card mb-3" style="border-radius: .5rem;">
+                        <div class="row g-0">
+                            <div class="col-md-4 gradient-custom text-center text-white"
+                            style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                <img src ="~/images/gym-logo.png"
+                                alt="Avatar" class="img-fluid my-5" style="width: 100px; height: 100px; border-radius: 50%;" />
+                                <h5 style="color: black;">@Model.Nombre</h5>
+                                <p style="color: black;">@Model.Apellido</p>
+                                <i class="far fa-edit mb-5"></i>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body p-4">
+                                    <h6>Informacion del Usuario</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>Correo Electronico</h6>
+                                            <p class="text-muted">@Model.Email</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Telefono</h6>
+                                            <p class="text-muted">@Model.Telefono</p>
+                                        </div>
+                                    </div>
+                                    <h6>Otros Datos</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>Direccion</h6>
+                                            <p class="text-muted">@Model.Direccion</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Fecha de Registro</h6>
+                                            <p class="text-muted">@Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start">
+                                        @if (ViewBag.verificarRol)
+                                        {
+                                            <a asp-action="EditarPerfil" asp-route-id="@Model.UsuarioID" class="btn btn-warning me-2">
+                                                <i class="far fa-edit"></i> Editar Perfil
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="EditarPerfil" asp-route-id="@Model.UsuarioID" class="btn btn-warning me-2">
+                                                <i class="far fa-edit"></i> Editar Perfil
+                                            </a>
+                                            <form asp-action="EliminarPerfil" method="post" onsubmit="return confirm('¿Estás seguro de que quieres eliminar tu perfil?');">
+                                                <input type="hidden" name="UsuarioID" value="@Model.UsuarioID" />
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="fas fa-trash-alt"></i> Eliminar Perfil
+                                                </button>
+                                            </form>
+                                        }       
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    }
+</div>
+
+

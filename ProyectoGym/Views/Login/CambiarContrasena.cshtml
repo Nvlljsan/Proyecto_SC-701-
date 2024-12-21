@@ -1,0 +1,49 @@
+﻿@model ProyectoGym.Models.Tokens
+
+@{
+    Layout = "~/Views/Shared/_LayoutExterno.cshtml";
+}
+<body class="bg-primary d-flex align-items-center justify-content-center vh-100">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header">
+                                    <h3 class="text-center font-weight-light my-4">Restablecer Contraseña</h3>
+                                    <a href="@Url.Action("Inicio","Home")" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                        <img src="~/images/gym-logo.png" alt="Logo Gym" style="width: 100px; height: 100px; border-radius: 50%;">
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    @if (TempData["Mensaje"] != null)
+                                    {
+                                        <div class="alert alert-secondary text-center">@TempData["Mensaje"]</div>
+                                    }
+
+                                    <form asp-action="CambiarContrasena" method="post">
+
+                                        <input type="hidden" name="Token" value="@Model.Token" />
+
+                                        <div class="mb-3">
+                                            <label for="NuevaContrasena" class="form-label">Nueva Contraseña</label>
+                                            <input asp-for="NuevaContrasena" type="password" class="form-control" placeholder="Ingrese su nueva contraseña" required />
+                                            <span asp-validation-for="NuevaContrasena" class="text-danger"></span>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg w-100">Actualizar Contraseña</button>
+                                    </form>
+                                </div>
+                                <div class="card-footer text-center py-3">
+                                    <div class="small"><a href="@Url.Action("InicioSesion", "Login")">Regresar</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
