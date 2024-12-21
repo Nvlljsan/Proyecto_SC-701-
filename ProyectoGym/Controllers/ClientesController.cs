@@ -24,7 +24,7 @@ namespace ProyectoGym.Controllers
         [HttpGet]
         public IActionResult ClientesLista()
         {
-           ;
+           
             var consecutivo = long.Parse(@User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString());
 
 

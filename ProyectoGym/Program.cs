@@ -9,6 +9,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient("DefaultClient", client => { client.Timeout = TimeSpan.FromMinutes(5); });
 
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IMetodosComunes, MetodosComunes>();
 

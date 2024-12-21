@@ -1,4 +1,4 @@
-﻿namespace ProyectoGym.Models.ViewModels
+﻿namespace ProyectoGymAPI.Models
 {
     public class CarritoViewModel
     {
