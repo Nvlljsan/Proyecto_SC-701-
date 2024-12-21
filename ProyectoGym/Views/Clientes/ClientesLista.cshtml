@@ -31,21 +31,22 @@
                                     <td>@cliente.FechaInicioMembresia?.ToString("dd/MM/yyyy")</td>
                                     <td>@cliente.FechaFinMembresia?.ToString("dd/MM/yyyy")</td>
                                     <td class="text-center">
-                                        @if (cliente.FechaFinMembresia >= DateTime.Today && cliente.MembresiaActiva == true)
+                                        @if (cliente.MembresiaActiva == false )
                                         {
-                                            <i class="fas fa-check-circle text-success"></i>
+                                            <i class="fas fa-times-circle text-danger"></i>
                                         }
                                         else
                                         {
-                                            <i class="fas fa-times-circle text-danger"></i>
+                                            <i class="fas fa-check-circle text-success"></i>
+                                            
                                         }
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <a asp-action="ClienteU" asp-route-id="@cliente.ClienteID" class="btn btn-sm btn-warning">
+                                            <a href="@Url.Action("ClienteU", "Clientes", new { ClienteID = cliente.ClienteID })" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <a asp-action="ClienteInactivo" asp-route-id="@cliente.ClienteID" class="btn btn-sm btn-danger">
+                                            <a href="@Url.Action("ClienteInactivo", "Clientes", new { ClienteID = cliente.ClienteID })" class="btn btn-sm btn-danger">
                                                 <i class="fas fa-trash-alt"></i> Inactivar
                                             </a>
                                         </div>

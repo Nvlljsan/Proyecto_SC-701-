@@ -18,6 +18,7 @@ CREATE TABLE Usuarios (
     Direccion NVARCHAR(255),
     FechaRegistro DATE NOT NULL,
     RolID INT,
+	Activo bit not null,
     FOREIGN KEY (RolID) REFERENCES Roles(RolID)
 );
 
@@ -440,8 +441,8 @@ CREATE PROCEDURE [dbo].[UsuarioC] ---- CREATE ----
     @RolID INT
 AS
 BEGIN
-    INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
-    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
+    INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID,Activo)
+    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID,1);
 
 	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
 
@@ -461,13 +462,13 @@ BEGIN
 		VALUES (@UsuarioId, NULL, GETDATE());
     END
 END;
-
+go
 	
-CREATE PROCEDURE [dbo].[UsuarioR] ---- READ ---- 
+CREATE PROCEDURE [dbo].[UsuarioR]   ---- READ ---- 
     @UsuarioID INT
 AS
 BEGIN
-    SELECT UsuarioID, Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID
+    SELECT UsuarioID, Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID,Activo
     FROM Usuarios
     WHERE UsuarioID = @UsuarioID;
 END;
@@ -480,7 +481,8 @@ CREATE PROCEDURE [dbo].[UsuarioU] ---- UPDATE ----
     @Email NVARCHAR(100),
     @Telefono NVARCHAR(20),
     @Direccion NVARCHAR(255),
-    @RolID INT
+    @RolID INT,
+	@Activo bit
 AS
 BEGIN
     UPDATE Usuarios
@@ -490,6 +492,7 @@ BEGIN
         Telefono = @Telefono,
         Direccion = @Direccion,
         RolID = @RolID
+		Activo = @Activo
     WHERE UsuarioID = @UsuarioID;
 END;
 GO
@@ -523,8 +526,9 @@ GO
 CREATE PROCEDURE UsuariosLista ---- LISTA USUARIOS ----
 AS
 BEGIN
-    SELECT UsuarioID, Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro, RolID
-    FROM Usuarios;
+   SELECT UsuarioID, Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro, R.NombreRol as NombreRol
+    FROM Usuarios U
+	inner join Roles R on U.RolID= R.RolID;
 END;
 GO
 
@@ -549,8 +553,8 @@ CREATE PROCEDURE [dbo].[Registro] ---- REGISTRO -----
 	@RolID INT
 AS
 BEGIN
-	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID)
-    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID);
+	INSERT INTO Usuarios (Nombre, Apellido, Email, Contrasena, Telefono, Direccion, FechaRegistro, RolID,Activo)
+    VALUES (@Nombre, @Apellido, @Email, @Contrasena, @Telefono, @Direccion, GETDATE(), @RolID,1);
 
 	DECLARE @UsuarioId INT = SCOPE_IDENTITY();
 

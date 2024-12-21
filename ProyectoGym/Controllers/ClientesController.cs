@@ -65,7 +65,7 @@ namespace ProyectoGym.Controllers
                     return View(datosContenido);
                 }
 
-                return View(new Clientes());
+                return View(result);
             }
 
 

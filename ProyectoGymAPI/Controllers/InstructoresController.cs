@@ -156,7 +156,7 @@ namespace ProyectoGymAPI.Controllers
                 try
                 {
                     var instructores = connection.Query<Instructores>(
-                        "ObtenerInstructoresConDetalle",
+                        "ObtenerInstructores",
                         commandType: CommandType.StoredProcedure).ToList();
 
                     if (instructores.Any())

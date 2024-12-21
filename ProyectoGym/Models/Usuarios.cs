@@ -12,5 +12,6 @@
         public DateTime FechaRegistro { get; set; }
         public int? RolID { get; set; }
         public bool Activo { get; set; }
+        public string NombreRol { get; set; } = string.Empty;
     }
 }
