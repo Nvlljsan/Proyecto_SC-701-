@@ -1,0 +1,35 @@
+﻿@model List<ProyectoGym.Models.ViewModels.CarritoViewModel>
+
+<h1>Mi Carrito</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NombreProducto</td>
+                <td>@item.Cantidad</td>
+                <td>
+                    <form asp-action="Eliminar" asp-controller="Carrito" method="post">
+                        <input type="hidden" name="carritoID" value="@item.CarritoID" />
+                        <input type="hidden" name="usuarioID" value="@ViewBag.UsuarioID" />
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-action="SimularPago" asp-controller="Carrito" method="post">
+    <input type="hidden" name="usuarioID" value="@ViewBag.UsuarioID" />
+    <button type="submit" class="btn btn-success">Pagar</button>
+</form>
+

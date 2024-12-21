@@ -1,0 +1,32 @@
+﻿@model List<ProyectoGym.Models.ViewModels.HistorialCompraViewModel>
+
+<h1>Historial de Compras</h1>
+
+@if (!Model.Any())
+{
+    <p>No se encontraron compras realizadas.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NombreProducto</td>
+                    <td>@item.Cantidad</td>
+                    <td>@item.Total</td>
+                    <td>@item.FechaCompra.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

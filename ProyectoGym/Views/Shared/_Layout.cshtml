@@ -108,6 +108,7 @@
                                             <a class="nav-link" href="@Url.Action("ClientesLista","Clientes")">Clientes Registrados</a>
                                             <a class="nav-link" href=@Url.Action("VistaEmpleados","Empleados")>Empleados</a>
                                             <a class="nav-link" href="@Url.Action("VistaInstructores","Instructores")">Instructores</a>
+                                            <a class="nav-link" href="@Url.Action("HistorialCompras","Carrito")">Historial de Compras</a>
                                         </nav>
                                     </div>
 
@@ -184,28 +185,6 @@
                                 }
                                 else if (RoleName == "2")
                                 {
-                                    <a class="nav-link" href="@Url.Action("Index","Home")">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                        Dashboard
-                                    </a>
-
-                                    <!-- Sección Acceso -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                        Acceso
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
-                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
-                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
-                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
-                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
-                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
-                                        </nav>
-                                    </div>
-
                                     <!-- Sección Usuarios -->
                                     <!-- LOS INSTRUCTORES SOLO PUEDEN VER A LOS CLIENTES -->
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
@@ -283,28 +262,6 @@
                                 }
                                 else if (RoleName == "3")
                                 {
-                                    <a class="nav-link" href="@Url.Action("Index","Home")">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                        Dashboard
-                                    </a>
-
-                                    <!-- Sección Acceso -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                        Acceso
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
-                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
-                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
-                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
-                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
-                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
-                                        </nav>
-                                    </div>
-
                                     <!-- Sección Usuarios -->
                                     <!-- LOS CLIENTES NO PUEDEN VER LOS USUARIOS, SOLO EL DE ELLOS -->
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
@@ -316,6 +273,7 @@
                                     <div class="collapse" id="collapseUsuarios" aria-labelledby="headingUsuarios" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                             <a class="nav-link" href="@Url.Action("Perfil","Usuarios")">Perfil</a>
+                                            <a class="nav-link" href="@Url.Action("HistorialCompras","Carrito")">Historial de Compras</a>
                                         </nav>
                                     </div>
 
@@ -368,30 +326,9 @@
 
                                     <!-- Sección Ventas -->
                                     <!-- LOS CLIENTES NO PUEDEN VER LAS VENTAS -->
-                                } else if (RoleName == "4")
+                                } 
+                                else if (RoleName == "4")
                                 {
-                                    <a class="nav-link" href="@Url.Action("Index","Home")">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                        Dashboard
-                                    </a>
-
-                                    <!-- Sección Acceso -->
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAcceso" aria-expanded="false" aria-controls="collapseAcceso">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                        Acceso
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-
-                                    <div class="collapse" id="collapseAcceso" aria-labelledby="headingAcceso" data-bs-parent="#sidenavAccordion">
-                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionAcceso">
-                                            <a class="nav-link" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
-                                            <a class="nav-link" href="@Url.Action("Registro","Login")">Registrarse</a>
-                                            <a class="nav-link" href="@Url.Action("RecuperarClave","Login")">Recuperar Clave</a>
-                                            <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a>
-                                            <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" style="display:none;"></form>
-                                        </nav>
-                                    </div>
-
                                     <!-- Sección Usuarios -->
                                     <!-- LOS EMPLEADOS NO PUEDEN VER LOS USUARIOS -->
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
@@ -418,6 +355,8 @@
                                     <div class="collapse" id="collapseProductos" aria-labelledby="headingProductos" data-bs-parent="#sidenavAccordion">
                                         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
                                             <a class="nav-link" href="@Url.Action("ProductosLista","Productos")">Productos Registrados</a>
+                                            <a class="nav-link" href="@Url.Action("CatalogoProductos","Productos")">Catalogo de Productos</a>
+                                            <a class="nav-link" href="@Url.Action("CarritoLista","Carrito")">Carrito de Compras</a>
                                         </nav>
                                     </div>
 
@@ -481,6 +420,48 @@
                                         </nav>
                                     </div>
                                 }
+                                else
+                                {
+                                    <!-- Sección Usuarios -->
+                                    <!-- LOS INVITADOS NO TIENEN ACCESO A NINGUNA FUNCION DE PERFIL -->
+
+                                    <!-- Sección Productos -->
+                                    <!-- LOS INVITADOS SOLO PUEDEN VER EL CATALOGO DE PRODUCTOS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseProductos" aria-expanded="false" aria-controls="collapseProductos">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Productos
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseProductos" aria-labelledby="headingProductos" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionUsuarios">
+                                            <a class="nav-link" href="@Url.Action("CatalogoProductos","Productos")">Catalogo de Productos</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Maquinas -->
+                                    <!-- LOS INVITADOS SOLO PUEDEN CONSULTAR POR MAQUINAS -->
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMaquinas" aria-expanded="false" aria-controls="collapseMaquinas">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                                        Maquinas
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+
+                                    <div class="collapse" id="collapseMaquinas" aria-labelledby="headingMaquinas" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionMaquinas">
+                                            <a class="nav-link" href="@Url.Action("MaquinasLista","Maquinas")">Maquinas Registradas</a>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Sección Pagos -->
+                                    <!-- LOS INVITADOS NO PUEDEN REGISTRAR NI CONSULTAR PAGOS -->
+
+                                    <!-- Sección Reservas -->
+                                    <!-- LOS INVITADOS NO PUEDEN REGISTRAR NI CONSULTAR RESERVAS -->
+
+                                    <!-- Sección Ventas -->
+                                    <!-- LOS INVITADOS NO PUEDEN REGISTRAR NI CONSULTAR VENTAS -->
+                                }
                             } 
                             </div>
                     </div>
@@ -523,6 +504,7 @@
 
     <!-- Bootstrap 5 JS (from CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//code.tidio.co/ev5k2qby77nmug8a4ys49isxfacwux5j.js" async></script>
 
     <!-- Local Scripts -->
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -24,7 +24,7 @@ namespace ProyectoGym.Controllers
         [HttpGet]
         public IActionResult ClientesLista()
         {
-           ;
+           
             var consecutivo = long.Parse(@User.FindFirstValue(ClaimTypes.NameIdentifier)!.ToString());
 
 
@@ -74,8 +74,6 @@ namespace ProyectoGym.Controllers
         [HttpPost]
         public IActionResult ClienteU(Clientes model)
         {
-           
-
             using (var client = _http.CreateClient())
             {
                 var url = _conf.GetSection("Variables:UrlApi").Value + "Clientes/ActualizarCliente";

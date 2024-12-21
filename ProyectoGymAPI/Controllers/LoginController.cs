@@ -158,9 +158,14 @@ namespace ProyectoGymAPI.Controllers
                 if (token != null)
                 {
                     var contrasenaCifrada = Encrypt(model.NuevaContrasena);
-                    var contrasena = context.Execute("ActualizarContrasena", new { token.UsuarioID, NuevaContrasena = contrasenaCifrada });
+                    var contrasenna = context.Execute("UPDATE Usuarios SET Contrasena = @NuevaContrasena WHERE UsuarioID = @UsuarioID", new { UsuarioID = token.UsuarioID, NuevaContrasena = contrasenaCifrada });
 
-                    if (contrasena != null) //Diferente de null para confirmar que esta recibiendo una contraseña
+                    Console.WriteLine($"Token recibido: {model.Token}, Nueva Contraseña: {model.NuevaContrasena}");
+                    Console.WriteLine($"Token desencriptado: {Encrypt(model.Token)}");
+                    Console.WriteLine($"UsuarioID obtenido: {token?.UsuarioID}");
+
+
+                    if (contrasenna > 0) // Verifica si se actualizó al menos una fila
                     {
                         var eliminar = context.Execute("TokenD", new { Token = tokenCifrado });
 
@@ -173,6 +178,8 @@ namespace ProyectoGymAPI.Controllers
                             respuesta.Codigo = -1;
                             respuesta.Mensaje = "Error al eliminar el token.";
                         }
+
+                        respuesta.Codigo = 0;
                     }
                     else
                     {
